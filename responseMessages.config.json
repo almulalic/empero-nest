@@ -1,0 +1,72 @@
+{
+  "cart": {
+    "add": {
+      "nonExistingProduct": "Artikal koji pokušavate dodati ne postoji.",
+      "success": "Artikal uspješno dodan u korpu!"
+    },
+    "delete": {
+      "nonExistingProduct": "Artikal koji želite ukloniti ne postoji.",
+      "success": "Artikal uspješno uklonjen iz korpe!"
+    }
+  },
+  "order": {
+    "getOne": {
+      "nonExistingOrder": "Tražena narudžba nije pronađena."
+    },
+    "add": {
+      "nonExistingCustomer": "Korisnik vezan za ovu narudžbu nije pronađen.",
+      "nonExistingProduct": "Artikal vezan za ovu narudžbu nije pronađen.",
+      "success": "Narudžba uspješno procesuirana!"
+    },
+    "addCart": {
+      "nonExistingCart": "Korpa nije pronađena.",
+      "nonExistingCartItem": "Neki od artikala iz korpe nisu mogli biti naručeni.",
+      "success": "Svi artikli iz korpe su uspješno naručeni!"
+    },
+    "delete": {
+      "nonExistingOrder": "Nardužba koji želite arhivirati ne postoji.",
+      "alreadyArchivedOrder": "Nardužba je već arhivirana.",
+      "success": "Nardužba uspješno arhivirana!"
+    }
+  },
+  "product": {
+    "getOne": {
+      "nonExistingProduct": "Traženi artikal nije pronađen."
+    },
+    "add": {
+      "nonExistingCategory": "Navedena kategorija nije pronađena.",
+      "success": "Artikal uspješno dodan!"
+    },
+    "update": {
+      "nonExistingProduct": "Navedeni artikal nije pronađen.",
+      "nonExistingCategory": "Navedena kategorija nije pronađena.",
+      "success": "Artikal uspješno izmjenjen!"
+    },
+    "delete": {
+      "nonExistingProduct": "Artikal koji želite arhivirati ne postoji.",
+      "alreadyArchivedProduct": "Artikal je već arhiviran.",
+      "success": "Artikal uspješno arhiviran!"
+    }
+  },
+  "customer": {
+    "register": {
+      "customerAlreadyExist": "Email adresa je već u upotrebi!",
+      "success": "Uspješno ste se registrovali na Empero Home Webshop."
+    },
+    "login": {
+      "customerNotFound": "Korisnik nije pronađen!",
+      "wrongPassword": "Pogrešna lozinka!",
+      "success": "Usješno ste se prijavili. Dobrodošli!"
+    },
+    "refresh": {
+      "nonExistingRefreshToken": "Vaš token nije dostupan. Molimo da se pokušate relogovati!",
+      "tokenMalformed": "Vaš token je malformisan. Molimo da se pokušate relogovati!",
+      "success": "Usješno ste se prijavili. Dobrodošli!"
+    }
+  },
+  "authorization": {
+    "invalidToken": "Vaš token nije validan. Molimo da se pokušate relogovati!",
+    "tokenMalformet": "Vaš token je malformisan. Molimo da se pokušate relogovati!",
+    "noPermission": "Vaš profil ne može pristupiti zatraženoj ruti. Provjerite da li ste admin pa pokušajte ponovo."
+  }
+}
