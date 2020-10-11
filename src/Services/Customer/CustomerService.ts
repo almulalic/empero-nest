@@ -3,7 +3,7 @@ import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { Customer } from '../../Models/Entities';
 import { ICustomerService } from './../Contracts/ICustomerService';
-import { RegisterDTO, LoginDTO, LoginResponseDTO } from './DTO';
+import { RegisterDTO, LoginDTO, LoginResponseDTO, ResendConfirmationDTO } from './DTO';
 import * as responseMessages from '../../../responseMessages.config.json';
 import { Credential } from './../../Common/Credential';
 import { TokenCustomerDTO } from './DTO/TokenCustomerDTO';
@@ -27,27 +27,52 @@ export class CustomerService implements ICustomerService {
 
     if (customer) throw new HttpException(responseMessages.customer.register.emailAlreadyInUse, HttpStatus.BAD_REQUEST);
 
-    dto.password = await Credential.EncryptPassword(dto.password);
+    let newCustomer: Customer = dto;
 
-    try {
-      await Mailer.SendConfirmationEmail(customer.id, customer);
-    } catch (err) {
-      return err.message;
-    }
+    newCustomer.password = await Credential.EncryptPassword(newCustomer.password);
 
-    await this.entityManager.getRepository(Customer).insert(dto);
+    newCustomer.id = (await this.entityManager.getRepository(Customer).insert(newCustomer)).generatedMaps[0].id;
 
-    return responseMessages.customer.register.success;
+    let confirmationMailResponse = await Mailer.SendConfirmationEmail(newCustomer.id, newCustomer);
+
+    return responseMessages.customer.register.success + confirmationMailResponse;
   }
 
-  ResendConfirmationCode(body: any): Promise<string> {
-    throw new Error('Method not implemented.');
+  public async ResendConfirmationToken(dto: ResendConfirmationDTO): Promise<string> {
+    let customer: Customer = await this.entityManager.getRepository(Customer).findOne({ email: dto.email });
+
+    if (!customer)
+      throw new HttpException(responseMessages.customer.resendConfirmation.nonExistingCustomer, HttpStatus.BAD_REQUEST);
+    else if (customer.isConfirmed)
+      throw new HttpException(responseMessages.customer.resendConfirmation.alreadyConfirmed, HttpStatus.BAD_REQUEST);
+      
+    return await Mailer.ResendConfirmationEmail(customer);
   }
+
   ChangeConfirmationEmail(body: any): Promise<string> {
     throw new Error('Method not implemented.');
   }
-  ConfirmIdentity(token: string): Promise<string> {
-    throw new Error('Method not implemented.');
+
+  public async ConfirmIdentity(token: string): Promise<string> {
+    if (token.length === 0) throw new HttpException('Kratak token', HttpStatus.BAD_REQUEST);
+
+    let decodedToken;
+
+    try {
+      decodedToken = await Credential.DecodeConfirmationToken(token);
+    } catch (err) {
+      throw new HttpException('Token Malformed', HttpStatus.BAD_REQUEST);
+    }
+
+    let confirmedCustomer: Customer = await this.entityManager
+      .getRepository(Customer)
+      .findOne({ id: decodedToken.userIdentityId });
+
+    confirmedCustomer.isConfirmed = true;
+
+    await this.entityManager.getRepository(Customer).save(confirmedCustomer);
+
+    return 'true';
   }
   ResetPassword(body: any): Promise<string> {
     throw new Error('Method not implemented.');

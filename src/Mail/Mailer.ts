@@ -1,50 +1,55 @@
-import jwt from 'jsonwebtoken';
-import sgMail from '@sendgrid/mail';
+import * as jwt from 'jsonwebtoken';
+import * as sgMail from '@sendgrid/mail';
 import * as mailerConfig from '../../mailer.config.json';
 import { TokenCustomerDTO } from './../Services/Customer/DTO';
+import { Credential } from '../Common/Credential';
 
 require('dotenv').config();
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 export class Mailer {
-  public static SendConfirmationEmail = async (id: number, body: TokenCustomerDTO) => {
-    const confirmationToken = jwt.sign({ userIdentityId: id }, process.env.EMAIL_SECRET, {
-      expiresIn: '1d',
-    });
-    const url = process.env.APP_URL + `/accountConfirmation/${confirmationToken}`;
+  public static SendConfirmationEmail = async (id: number, body: TokenCustomerDTO): Promise<string> => {
+    const url =
+      process.env.BASE_AUTH_URL + `/accountConfirmation/${await Credential.GenerateConfirmationToken(id, '1d')}`;
 
-    sgMail
-      .send({
-        to: body.email,
-        from: mailerConfig.noReply,
-        subject: mailerConfig.confirmation.subject,
-        html: `Hi ${body.firstName} ${body.lastName}! Please click this link to confirm your email <a href="${url}">${url}</a> <input value=${confirmationToken} />`,
-      })
-      .catch((err) => {
-        throw new Error(mailerConfig.confirmation.fail);
-      });
+    return new Promise((resolve, reject) => {
+      sgMail
+        .send({
+          to: body.email,
+          from: mailerConfig.noReply,
+          subject: mailerConfig.confirmation.subject,
+          html: `Hi ${body.firstName} ${body.lastName}! Please click this link to confirm your email <a href="${url}">${url}</a>`,
+        })
+        .then(() => {
+          resolve(mailerConfig.confirmation.success);
+        })
+        .catch((err) => {
+          resolve(mailerConfig.confirmation.fail);
+        });
+    });
   };
 
-  public ResendConfirmationEmail = async (customerData) => {
-    const confirmationToken = jwt.sign({ id: customerData.id }, process.env.EMAIL_SECRET, {
-      expiresIn: '1d',
-    });
-    const url = process.env.APP_URL + `/accountConfirmation/${confirmationToken}`;
+  public static ResendConfirmationEmail = async (customerData): Promise<string> => {
+    const url =
+      process.env.BASE_AUTH_URL +
+      `/accountConfirmation/${await Credential.GenerateConfirmationToken(customerData.id, '1d')}`;
 
-    sgMail
-      .send({
-        to: customerData.email,
-        from: mailerConfig.noReply,
-        subject: mailerConfig.confirmation.subject,
-        html: `Hi there! You requested reconfirmation. Please click this link to confirm your email <a href="${url}">${url}</a>`,
-      })
-      .then(() => {
-        return mailerConfig.confirmation.success;
-      })
-      .catch((err) => {
-        return mailerConfig.confirmation.fail;
-      });
+    return new Promise((resolve, reject) => {
+      sgMail
+        .send({
+          to: customerData.email,
+          from: mailerConfig.noReply,
+          subject: mailerConfig.confirmation.subject,
+          html: `Hi ${customerData.firstName} ${customerData.lastName}! You requested a new email confirmation mail. Please click this link to confirm your email <a href="${url}">${url}</a> `,
+        })
+        .then(() => {
+          resolve(mailerConfig.confirmation.success);
+        })
+        .catch(() => {
+          resolve(mailerConfig.confirmation.fail);
+        });
+    });
   };
 
   public SendResetPasswordEmail = async (userData) => {

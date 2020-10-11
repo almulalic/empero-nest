@@ -1,9 +1,16 @@
-import { RegisterDTO, LoginDTO, RefreshTokenDTO, LoginResponseDTO, RefreshTokenResponseDTO } from '../Customer/DTO';
+import {
+  RegisterDTO,
+  LoginDTO,
+  RefreshTokenDTO,
+  LoginResponseDTO,
+  RefreshTokenResponseDTO,
+  ResendConfirmationDTO,
+} from '../Customer/DTO';
 
 export interface ICustomerService {
   IsValidEmail(email: string): Promise<boolean>;
   Register(dto: RegisterDTO): Promise<string>;
-  ResendConfirmationCode(body): Promise<string>;
+  ResendConfirmationToken(body: ResendConfirmationDTO): Promise<string>;
   ChangeConfirmationEmail(body): Promise<string>;
   ConfirmIdentity(token: string): Promise<string>;
   ResetPassword(body): Promise<string>;

@@ -67,6 +67,10 @@
       "nonExistingRefreshToken": "Vaš token nije dostupan. Molimo da se pokušate relogovati!",
       "tokenMalformed": "Vaš token je malformisan. Molimo da se pokušate relogovati!",
       "success": "Usješno ste se prijavili. Dobrodošli!"
+    },
+    "resendConfirmation": {
+      "nonExistingCustomer": "Korisnički račun sa ovom email adresom nije pronađen!",
+      "alreadyConfirmed": "Korisnički račun je već potvrđen!"
     }
   },
   "authorization": {

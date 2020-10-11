@@ -4,6 +4,7 @@ import {
   LoginResponseDTO,
   RefreshTokenDTO,
   RefreshTokenResponseDTO,
+  ResendConfirmationDTO,
 } from '../../Services/Customer/DTO';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CustomerService } from './../../Services/Customer/CustomerService';
@@ -20,6 +21,16 @@ export class CustomerController {
   @Post('/register')
   public async Register(@Body() body: RegisterDTO): Promise<string> {
     return await this.CustomerService.Register(body);
+  }
+
+  @Post('/resendConfirmationCode')
+  public async ResendConfirmationToken(@Body() body: ResendConfirmationDTO): Promise<string> {
+    return await this.CustomerService.ResendConfirmationToken(body);
+  }
+
+  @Get('/confirmIdentity/:token')
+  public async ConfirmIdentity(@Param('token') token: string): Promise<string> {
+    return await this.CustomerService.ConfirmIdentity(token);
   }
 
   @Post('/login')

@@ -97,7 +97,7 @@ export class ProductsService implements IPrdouctsService {
 
     await this.entityManager.getRepository(Product).save(modifiedProduct);
 
-    return responseMessages.product.update.success;
+    return responseMessages.product.modify.success;
   };
 
   public DeleteProduct = async (productId: number): Promise<string> => {

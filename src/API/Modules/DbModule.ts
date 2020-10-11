@@ -2,18 +2,19 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Cart, Customer, Order, Product, Category } from '../../Models/Entities';
 
+require('dotenv').config();
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      name: 'default',
+      name: process.env.DB_NAME,
       type: 'mysql',
-      host: 'eu-cdbr-west-03.cleardb.net',
-      port: 3306,
-      username: 'b531087f31443a',
-      password: 'b2283407',
-      database: 'heroku_42df861642a2ede',
-      synchronize: true,
-      logging: false,
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_TABLE_NAME,
+      synchronize: Boolean(Number(process.env.DB_SYNC)),
+      logging: Boolean(Number(process.env.DB_LOGGING)),
       entities: [Cart, Product, Customer, Order, Category],
       cli: {
         entitiesDir: 'src/Models/Entities',
