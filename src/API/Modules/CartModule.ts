@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Cart } from '../../Models/Entities';
-import CartService from '../../Services/Cart/CartService';
+import { CartService } from '../../Services';
 import { CartController } from '../Controllers';
 
 @Module({

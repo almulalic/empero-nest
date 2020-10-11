@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Customer } from './Customer';
 import { Product } from './Product';
 
@@ -42,9 +35,6 @@ export class Cart {
     select: false,
   })
   modifiedAt: Date;
-
-  @Column('datetime', { name: 'archivedAt', select: false })
-  archivedAt: Date | null;
 
   @ManyToOne(() => Customer, (customer) => customer.carts, {
     onDelete: 'RESTRICT',

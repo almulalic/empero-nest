@@ -1,13 +1,15 @@
-// import { Product } from "../../Models/Entities";
-// import { ProductDTO, ProductFilterDTO } from "../Products/DTO";
+import { ResponseGrid } from '../../Common';
+import { ProductDTO } from '../Products/DTO';
+import { Product } from '../../Models/Entities';
+import { GridParams } from './../../Common/ResponseGrid/ResponseGrid';
 
-// export interface IPrdouctService {
-//   GetAllProducts(dto: ProductFilterDTO): Promise<Product[]>;
-//   GetArchive(): Promise<Product[]>;
-//   GetRecommended(): Promise<Product[]>;
-//   GetSuggested(categoryId: number): Promise<Product[]>;
-//   GetProduct(productId: number): Promise<Product>;
-//   AddPrdouct(dto: ProductDTO, productImage: string): Promise<string>;
-//   UpdateProduct(productId: number, dto: ProductDTO, productImage: string): Promise<string>;
-//   DeleteProduct(productId: number): Promise<string>;
-// }
+export interface IPrdouctsService {
+  GetAllProducts(dto: GridParams): Promise<ResponseGrid<Product>>;
+  GetArchive(dto: GridParams): Promise<ResponseGrid<Product>>;
+  GetRecommended(): Promise<Product[]>;
+  GetSuggested(categoryId: number): Promise<Product[]>;
+  GetProduct(productId: number): Promise<Product>;
+  AddPrdouct(dto: ProductDTO, productImage: string): Promise<string>;
+  UpdateProduct(productId: number, dto: ProductDTO, productImage: string): Promise<string>;
+  DeleteProduct(productId: number): Promise<string>;
+}

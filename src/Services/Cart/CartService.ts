@@ -1,93 +1,51 @@
-import { classToPlain } from 'class-transformer';
 import { AddToCartDTO } from './DTO';
+import { EntityManager } from 'typeorm';
 import { ICartService } from '../Contracts';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
+import { InjectEntityManager } from '@nestjs/typeorm';
 import { Cart, Product } from '../../Models/Entities';
-import {
-  Connection,
-  createQueryBuilder,
-  EntityManager,
-  getConnection,
-  Repository,
-} from 'typeorm';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as responseMessages from '../../../responseMessages.config.json';
 
 @Injectable()
-class CartService {
+export class CartService implements ICartService {
   constructor(
     @InjectEntityManager()
     private entityManager: EntityManager,
   ) {}
 
-  public GetCartContent = async (
-    currentCustomerId: number,
-  ): Promise<Cart[]> => {
-    return classToPlain(
-      await this.entityManager
-        .createQueryBuilder()
-        .from(Cart, 'Cart')
-        .innerJoinAndSelect('Cart.product', 'Product')
-        .where('Cart.customerId = :id', {
-          id: currentCustomerId,
-        })
-        .getMany(),
-    ) as Cart[];
+  public GetCartItems = async (currentCustomerId: number): Promise<Cart[]> => {
+    return await this.entityManager
+      .getRepository(Cart)
+      .createQueryBuilder()
+      .innerJoinAndSelect('Cart.product', 'Product')
+      .where('Cart.customerId = :id', {
+        id: currentCustomerId,
+      })
+      .getMany();
   };
 
-  public AddToCart = async (
-    dto: AddToCartDTO,
-    currentCustomerId: number,
-  ): Promise<string> => {
-    let product = await this.entityManager
-      .getRepository(Product)
-      .findOne({ id: dto.productId });
+  public AddToCart = async (dto: AddToCartDTO, currentCustomerId: number): Promise<string> => {
+    let product: Product = await this.entityManager.getRepository(Product).findOne({ id: dto.productId });
 
-    if (!product)
-      throw new HttpException(
-        responseMessages.cart.add.nonExistingProduct,
-        HttpStatus.NOT_FOUND,
-      );
+    if (!product) throw new HttpException(responseMessages.cart.add.nonExistingProduct, HttpStatus.NOT_FOUND);
 
     dto.customerId = currentCustomerId;
     dto.totalPrice = product.price * dto.quantity;
 
-    await getConnection()
-      .createQueryBuilder()
-      .insert()
-      .into(Cart)
-      .values(dto)
-      .execute();
+    await this.entityManager.getRepository(Cart).insert(dto);
 
     return responseMessages.cart.add.success;
   };
 
-  public RemoveFromCart = async (
-    cartId: number,
-    currentCustomerId: number,
-  ): Promise<string> => {
-    let cartItem: Cart = await createQueryBuilder(Cart)
-      .where('Cart.id = :cartId', { cartId: cartId })
-      .andWhere('Cart.customerId = :customerId', {
-        customerId: currentCustomerId,
-      })
-      .getOne();
+  public RemoveFromCart = async (cartId: number, currentCustomerId: number): Promise<string> => {
+    let cartItem: Cart = await this.entityManager
+      .getRepository(Cart)
+      .findOne({ id: cartId, customerId: currentCustomerId });
 
-    if (!cartItem)
-      throw new HttpException(
-        responseMessages.cart.delete.nonExistingProduct,
-        HttpStatus.NOT_FOUND,
-      );
+    if (!cartItem) throw new HttpException(responseMessages.cart.remove.nonExistingProduct, HttpStatus.NOT_FOUND);
 
-    await getConnection()
-      .createQueryBuilder()
-      .delete()
-      .from(Cart)
-      .where('Cart.Id = :id', { id: cartId })
-      .execute();
+    await this.entityManager.getRepository(Cart).delete(cartId);
 
-    return responseMessages.cart.delete.success;
+    return responseMessages.cart.remove.success;
   };
 }
-
-export default CartService;
