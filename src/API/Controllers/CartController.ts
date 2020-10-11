@@ -13,8 +13,8 @@ export class CartController {
   }
 
   @Post()
-  public async AddToCart(@Body() dto: AddToCartDTO): Promise<string> {
-    return await this.CartService.AddToCart(dto, 1);
+  public async AddToCart(@Body() body: AddToCartDTO): Promise<string> {
+    return await this.CartService.AddToCart(body, 1);
   }
 
   @Delete(':id')

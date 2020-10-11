@@ -1,11 +1,11 @@
 import { DateTime } from 'luxon';
 import { ResponseGrid } from '../../Common';
 import { IOrderService } from './../Contracts';
-import { GetOrderDTO, PlaceOrderDTO } from './DTO';
+import { GetOrderDTO, OrderDTO } from './DTO';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager, SelectQueryBuilder } from 'typeorm';
 import { Customer, Order, Product } from '../../Models/Entities';
-import { GridParams } from '../../Common/ResponseGrid/ResponseGrid';
+import { GridParams } from '../../Common/ResponseGrid';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import * as responseMessages from '../../../responseMessages.config.json';
 
@@ -48,7 +48,13 @@ export class OrdersService implements IOrderService {
     return order;
   };
 
-  public PlaceOrder = async (dto: PlaceOrderDTO, currentCustomerId: number): Promise<string> => {
+  public OrderCart = async (currentCustomerId: number): Promise<string> => {
+    let customer: Customer = await this.entityManager.getRepository(Customer).findOne({ id: currentCustomerId });
+
+    throw new Error('Method not implemented');
+  };
+
+  public AddOrder = async (dto: OrderDTO, currentCustomerId: number): Promise<string> => {
     let customer: Customer = await this.entityManager.getRepository(Customer).findOne({ id: currentCustomerId });
 
     if (!customer) throw new HttpException(responseMessages.order.add.nonExistingCustomer, HttpStatus.NOT_FOUND);
@@ -65,10 +71,20 @@ export class OrdersService implements IOrderService {
     return responseMessages.product.add.success;
   };
 
-  public OrderCart = async (currentCustomerId: number): Promise<string> => {
-    let customer: Customer = await this.entityManager.getRepository(Customer).findOne({ id: currentCustomerId });
+  public ModifyOrder = async (orderId: number, dto: OrderDTO, currentCustomerId: number): Promise<string> => {
+    let order: Order = await this.entityManager.getRepository(Order).findOne({ id: orderId });
 
-    throw new Error('Method not implemented');
+    if (!order) throw new HttpException(responseMessages.order.modify.nonExistingProduct, HttpStatus.NOT_FOUND);
+
+    let modifiedOrder: Order = dto;
+
+    modifiedOrder.id = order.id;
+    modifiedOrder.createdAt = order.createdAt;
+    modifiedOrder.archivedAt = order.archivedAt;
+
+    await this.entityManager.getRepository(Product).save(modifiedOrder);
+
+    return responseMessages.order.modify.success;
   };
 
   public RemoveOrder = async (orderId: number): Promise<string> => {

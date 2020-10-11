@@ -1,1 +1,1 @@
-export { ResponseGrid } from './ResponseGrid/ResponseGrid';
+export { ResponseGrid } from './ResponseGrid';

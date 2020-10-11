@@ -6,7 +6,7 @@ import { Category, Product } from '../../Models/Entities';
 import { EntityManager, SelectQueryBuilder } from 'typeorm';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import * as responseMessages from '../../../responseMessages.config.json';
-import { GridParams, ResponseGrid } from '../../Common/ResponseGrid/ResponseGrid';
+import { GridParams, ResponseGrid } from '../../Common/ResponseGrid';
 
 @Injectable()
 export class ProductsService implements IPrdouctsService {
@@ -76,26 +76,26 @@ export class ProductsService implements IPrdouctsService {
     return responseMessages.product.add.success;
   };
 
-  public UpdateProduct = async (productId: number, dto: ProductDTO, productImage: string): Promise<string> => {
+  public ModifyProduct = async (productId: number, dto: ProductDTO, productImage: string): Promise<string> => {
     let product: Product = await this.entityManager.getRepository(Product).findOne({ id: productId });
 
-    if (!product) throw new HttpException(responseMessages.product.update.nonExistingProduct, HttpStatus.NOT_FOUND);
+    if (!product) throw new HttpException(responseMessages.product.modify.nonExistingProduct, HttpStatus.NOT_FOUND);
 
     // If category changed
     if (product.categoryId !== dto.categoryId) {
       let category: Category = await this.entityManager.getRepository(Category).findOne({ id: dto.categoryId });
 
-      if (!category) throw new HttpException(responseMessages.product.update.nonExistingCategory, HttpStatus.NOT_FOUND);
+      if (!category) throw new HttpException(responseMessages.product.modify.nonExistingCategory, HttpStatus.NOT_FOUND);
     }
 
-    let updatedProduct: Product = dto;
+    let modifiedProduct: Product = dto;
 
-    updatedProduct.id = product.id;
-    updatedProduct.image = productImage;
-    updatedProduct.createdAt = product.createdAt;
-    updatedProduct.archivedAt = product.archivedAt;
+    modifiedProduct.id = product.id;
+    modifiedProduct.image = productImage;
+    modifiedProduct.createdAt = product.createdAt;
+    modifiedProduct.archivedAt = product.archivedAt;
 
-    await this.entityManager.getRepository(Product).save(updatedProduct);
+    await this.entityManager.getRepository(Product).save(modifiedProduct);
 
     return responseMessages.product.update.success;
   };

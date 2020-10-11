@@ -1,0 +1,8 @@
+{
+  "noReply": " no-reply@enviorment.live",
+  "confirmation": {
+    "subject": "Konfirmacijski email za Empero Web Shop",
+    "success": "Konfirmacijski email uspješno poslan. Provjerite vašu email adresu kako bi ste nastavili.",
+    "fail": "Došlo je do greške prilikom slanja konfirmacijskog emaila. Molimo pokušajte ponovo ili kontaktirajte našu IT službu."
+  }
+}

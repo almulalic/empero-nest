@@ -1,11 +1,5 @@
-export enum GridFilterType {
-  Range = 1,
-  Match = 2,
-  Contains = 3,
-}
-export type GridFilterValue = 'string' | 'number' | 'boolean' | 'date' | 'null';
-
-export type OrderType = 'ASC' | 'DESC';
+import { GridFilterType } from './Enumerations';
+import { OrderType } from './Types';
 
 export class GridDataFilter {
   type: GridFilterType;

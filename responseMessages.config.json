@@ -24,6 +24,10 @@
       "nonExistingCartItem": "Neki od artikala iz korpe nisu mogli biti naručeni.",
       "success": "Svi artikli iz korpe su uspješno naručeni!"
     },
+    "modify": {
+      "nonExistingProduct": "Navedeni artikal nije pronađen.",
+      "success": "Artikal uspješno izmjenjen!"
+    },
     "remove": {
       "nonExistingOrder": "Nardužba koji želite arhivirati ne postoji.",
       "alreadyArchivedOrder": "Nardužba je već arhivirana.",
@@ -38,7 +42,7 @@
       "nonExistingCategory": "Navedena kategorija nije pronađena.",
       "success": "Artikal uspješno dodan!"
     },
-    "update": {
+    "modify": {
       "nonExistingProduct": "Navedeni artikal nije pronađen.",
       "nonExistingCategory": "Navedena kategorija nije pronađena.",
       "success": "Artikal uspješno izmjenjen!"
@@ -51,7 +55,7 @@
   },
   "customer": {
     "register": {
-      "customerAlreadyExist": "Email adresa je već u upotrebi!",
+      "emailAlreadyInUse": "Email adresa je već u upotrebi!",
       "success": "Uspješno ste se registrovali na Empero Home Webshop."
     },
     "login": {

@@ -1,11 +1,10 @@
 import { ResponseGrid } from '../../Common';
-import { Order, Product } from '../../Models/Entities';
+import { Order } from '../../Models/Entities';
 import { OrdersService } from '../../Services/index';
-import { ProductDTO } from '../../Services/Products/DTO';
-import { GridParams } from './../../Common/ResponseGrid/ResponseGrid';
-import { Controller, Get, Post, Body, Delete, Param, Put, HttpCode, HttpStatus } from '@nestjs/common';
+import { OrderDTO } from '../../Services/Orders/DTO';
+import { GridParams } from '../../Common/ResponseGrid';
 import { GetOrderDTO } from '../../Services/Orders/DTO';
-import { PlaceOrderDTO } from './../../Services/Orders/DTO/PlaceOrderDTO';
+import { Controller, Post, Body, Delete, Param, Put, HttpCode, HttpStatus } from '@nestjs/common';
 
 @Controller('orders')
 export class OrdersController {
@@ -13,30 +12,30 @@ export class OrdersController {
 
   @Post('/all')
   @HttpCode(HttpStatus.OK)
-  public async GetAllProducts(@Body() dto: GridParams): Promise<ResponseGrid<Order>> {
-    return await this.OrdersService.GetAllOrders(dto);
+  public async GetAllProducts(@Body() body: GridParams): Promise<ResponseGrid<Order>> {
+    return await this.OrdersService.GetAllOrders(body);
   }
 
   @Post('/archive')
   @HttpCode(HttpStatus.OK)
-  public async GetArchive(@Body() dto: GridParams): Promise<ResponseGrid<Order>> {
-    return await this.OrdersService.GetArchive(dto);
+  public async GetArchive(@Body() body: GridParams): Promise<ResponseGrid<Order>> {
+    return await this.OrdersService.GetArchive(body);
   }
 
   @Post('/:orderId')
-  public async GetOrder(@Body() dto: GetOrderDTO, @Param('orderId') productId: number): Promise<Order> {
-    return await this.OrdersService.GetOrder(dto, productId);
+  public async GetOrder(@Body() body: GetOrderDTO, @Param('orderId') productId: number): Promise<Order> {
+    return await this.OrdersService.GetOrder(body, productId);
   }
 
   @Post()
-  public async PlaceOrder(@Body() dto: PlaceOrderDTO): Promise<string> {
-    return await this.OrdersService.PlaceOrder(dto, 1);
+  public async AddOrder(@Body() body: OrderDTO): Promise<string> {
+    return await this.OrdersService.AddOrder(body, 1);
   }
 
-  //   @Put('/:orderId')
-  //   public async UpdateProduct(@Param('productId') productId: number, @Body() dto: PlaceOrderDTO): Promise<string> {
-  //     // return await this.OrdersService.UpdateProduct(productId, dto, 1);
-  //   }
+  @Put('/:orderId')
+  public async ModifyOrder(@Param('orderId') orderId: number, @Body() body: OrderDTO): Promise<string> {
+    return await this.OrdersService.ModifyOrder(orderId, body, 1);
+  }
 
   @Delete('/:productId')
   public async DeleteProduct(@Param('productId') productId: number): Promise<string> {
