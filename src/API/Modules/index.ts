@@ -3,3 +3,4 @@ export { CartModule } from './CartModule';
 export { OrderModule } from './OrderModule';
 export { ProductModule } from './ProductModule';
 export { IdentityModule } from './IdentityModule';
+export { CategoryModule } from './CategoryModule';
