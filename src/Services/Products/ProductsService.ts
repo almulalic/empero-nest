@@ -6,7 +6,7 @@ import { Category, Product } from '../../Models/Entities';
 import { EntityManager, SelectQueryBuilder } from 'typeorm';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import * as responseMessages from '../../../responseMessages.config.json';
-import { GridParams, ResponseGrid } from '../../Common/ResponseGrid';
+import { GridParams, ResponseGrid } from '../../Common/ResponseFormatter';
 
 @Injectable()
 export class ProductsService implements IPrdouctsService {

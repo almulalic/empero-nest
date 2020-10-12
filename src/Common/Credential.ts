@@ -1,7 +1,5 @@
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-import { identity } from 'rxjs';
-import { async } from 'rxjs/internal/scheduler/async';
 import { Customer } from '../Models/Entities';
 import { TokenCustomerDTO } from '../Services/Identity/DTO';
 

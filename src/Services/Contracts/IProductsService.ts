@@ -1,7 +1,7 @@
 import { ResponseGrid } from '../../Common';
 import { ProductDTO } from '../Products/DTO';
 import { Product } from '../../Models/Entities';
-import { GridParams } from '../../Common/ResponseGrid';
+import { GridParams } from '../../Common/ResponseFormatter';
 
 export interface IPrdouctsService {
   GetAllProducts(dto: GridParams): Promise<ResponseGrid<Product>>;

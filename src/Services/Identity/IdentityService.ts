@@ -1,8 +1,3 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { InjectEntityManager } from '@nestjs/typeorm';
-import { EntityManager } from 'typeorm';
-import { Customer } from '../../Models/Entities';
-import { IIdentityService } from '../Contracts';
 import {
   RegisterDTO,
   LoginDTO,
@@ -12,11 +7,16 @@ import {
   ConfirmResetPasswordDTO,
   ResetPasswordDTO,
 } from './DTO';
-import * as responseMessages from '../../../responseMessages.config.json';
-import { Credential } from '../../Common/Credential';
-import { TokenCustomerDTO } from './DTO/TokenCustomerDTO';
-import { RefreshTokenDTO } from './DTO/RefreshTokenDTO';
+import { EntityManager } from 'typeorm';
 import { Mailer } from '../../Mail/Mailer';
+import { IIdentityService } from '../Contracts';
+import { Customer } from '../../Models/Entities';
+import { Credential } from '../../Common/Credential';
+import { InjectEntityManager } from '@nestjs/typeorm';
+import { RefreshTokenDTO } from './DTO/RefreshTokenDTO';
+import { TokenCustomerDTO } from './DTO/TokenCustomerDTO';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import * as responseMessages from '../../../responseMessages.config.json';
 
 @Injectable()
 export class IdentityService implements IIdentityService {
@@ -71,31 +71,33 @@ export class IdentityService implements IIdentityService {
 
     await this.entityManager.getRepository(Customer).save(customer);
 
-    return 'jest';
+    return responseMessages.identity.resendConfirmation.success;
   }
 
   public async ConfirmIdentity(token: string): Promise<string> {
-    if (token.length === 0) throw new HttpException('Kratak token', HttpStatus.BAD_REQUEST);
+    if (token.length === 0)
+      throw new HttpException(responseMessages.identity.confirmIdentity.tokenMalformed, HttpStatus.BAD_REQUEST);
 
     let decodedToken;
 
     try {
       decodedToken = await Credential.DecodeRegisterConfirmationToken(token);
     } catch (err) {
-      throw new HttpException('Token Malformed', HttpStatus.BAD_REQUEST);
+      throw new HttpException(responseMessages.identity.confirmIdentity.tokenMalformed, HttpStatus.BAD_REQUEST);
     }
 
     let confirmedCustomer: Customer = await this.entityManager
       .getRepository(Customer)
       .findOne({ id: decodedToken.userIdentityId });
 
-    if (confirmedCustomer.isConfirmed) throw new HttpException('Korisnik vec konfirman', HttpStatus.BAD_REQUEST);
+    if (confirmedCustomer.isConfirmed)
+      throw new HttpException(responseMessages.identity.confirmIdentity.alreadyConfirmed, HttpStatus.BAD_REQUEST);
 
     confirmedCustomer.isConfirmed = true;
 
     await this.entityManager.getRepository(Customer).save(confirmedCustomer);
 
-    return 'true';
+    return responseMessages.identity.confirmIdentity.success;
   }
 
   public async ResetPassword(dto: ResetPasswordDTO): Promise<string> {

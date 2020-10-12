@@ -1,5 +1,6 @@
 import { GridFilterType } from './Enumerations';
 import { OrderType } from './Types';
+import { HttpStatus } from '@nestjs/common';
 
 export class GridDataFilter {
   type: GridFilterType;
@@ -54,4 +55,16 @@ export class ResponseGrid<T> {
 
     return new ResponseGrid<T>(filtered);
   }
+}
+
+export class OkResponse {
+  statusCode: HttpStatus;
+  message: string | boolean | number;
+}
+
+export function Ok(message: string | boolean | number, statusCode: HttpStatus = 200) {
+  return {
+    statusCode: statusCode,
+    message: message.toString(),
+  };
 }

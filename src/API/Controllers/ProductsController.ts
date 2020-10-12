@@ -1,8 +1,8 @@
 import { ResponseGrid } from '../../Common';
 import { Product } from '../../Models/Entities';
 import { ProductsService } from '../../Services';
-import { GridParams } from '../../Common/ResponseGrid';
 import { ProductDTO } from '../../Services/Products/DTO';
+import { GridParams, Ok, OkResponse } from '../../Common/ResponseFormatter';
 import { Controller, Get, Post, Body, Delete, Param, Put, HttpCode, HttpStatus } from '@nestjs/common';
 
 @Controller('products')
@@ -37,17 +37,17 @@ export class ProductsController {
   }
 
   @Post()
-  public async AddProduct(@Body() body: ProductDTO): Promise<string> {
-    return await this.ProductsService.AddPrdouct(body, null);
+  public async AddProduct(@Body() body: ProductDTO): Promise<OkResponse> {
+    return Ok(await this.ProductsService.AddPrdouct(body, null));
   }
 
   @Put('/:productId')
-  public async ModifyProduct(@Param('productId') productId: number, @Body() body: ProductDTO): Promise<string> {
-    return await this.ProductsService.ModifyProduct(productId, body, null);
+  public async ModifyProduct(@Param('productId') productId: number, @Body() body: ProductDTO): Promise<OkResponse> {
+    return Ok(await this.ProductsService.ModifyProduct(productId, body, null));
   }
 
   @Delete('/:productId')
-  public async DeleteProduct(@Param('productId') productId: number): Promise<string> {
-    return await this.ProductsService.DeleteProduct(productId);
+  public async DeleteProduct(@Param('productId') productId: number): Promise<OkResponse> {
+    return Ok(await this.ProductsService.DeleteProduct(productId));
   }
 }

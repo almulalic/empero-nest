@@ -70,7 +70,13 @@
     },
     "resendConfirmation": {
       "nonExistingCustomer": "Korisnički račun sa ovom email adresom nije pronađen!",
-      "alreadyConfirmed": "Korisnički račun je već potvrđen!"
+      "alreadyConfirmed": "Korisnički račun je već potvrđen!",
+      "success": "Zahtjev za ponovnu konfirmaciju uspješno poslan na vašu email adresu!"
+    },
+    "confirmIdetity": {
+      "tokenMalformed": "Konfrimacijski token je malformisan. Molimo pokušajte ponovo.",
+      "alreadyConfirmed": "Korisnički račun je već potvrđen!",
+      "success": "Uspješno ste verifikovali vašu email adresu!"
     },
     "passwordResetRequest": {
       "nonExistingIdentity": "Korisnik nije pronađen",

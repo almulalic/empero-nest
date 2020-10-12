@@ -2,8 +2,8 @@ import { ResponseGrid } from '../../Common';
 import { Order } from '../../Models/Entities';
 import { OrdersService } from '../../Services/index';
 import { OrderDTO } from '../../Services/Orders/DTO';
-import { GridParams } from '../../Common/ResponseGrid';
 import { GetOrderDTO } from '../../Services/Orders/DTO';
+import { GridParams, Ok, OkResponse } from '../../Common/ResponseFormatter';
 import { Controller, Post, Body, Delete, Param, Put, HttpCode, HttpStatus } from '@nestjs/common';
 
 @Controller('orders')
@@ -28,17 +28,17 @@ export class OrdersController {
   }
 
   @Post()
-  public async AddOrder(@Body() body: OrderDTO): Promise<string> {
-    return await this.OrdersService.AddOrder(body, 1);
+  public async AddOrder(@Body() body: OrderDTO): Promise<OkResponse> {
+    return Ok(await this.OrdersService.AddOrder(body, 1));
   }
 
   @Put('/:orderId')
-  public async ModifyOrder(@Param('orderId') orderId: number, @Body() body: OrderDTO): Promise<string> {
-    return await this.OrdersService.ModifyOrder(orderId, body, 1);
+  public async ModifyOrder(@Param('orderId') orderId: number, @Body() body: OrderDTO): Promise<OkResponse> {
+    return Ok(await this.OrdersService.ModifyOrder(orderId, body, 1));
   }
 
   @Delete('/:productId')
-  public async DeleteProduct(@Param('productId') productId: number): Promise<string> {
-    return await this.OrdersService.RemoveOrder(productId);
+  public async DeleteProduct(@Param('productId') productId: number): Promise<OkResponse> {
+    return Ok(await this.OrdersService.RemoveOrder(productId));
   }
 }

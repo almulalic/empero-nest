@@ -1,7 +1,7 @@
-import { InjectEntityManager } from '@nestjs/typeorm';
-import { Category } from '../../Models/Entities';
-import { ICategoryService } from '../Contracts/ICategoryService';
 import { EntityManager } from 'typeorm';
+import { Category } from '../../Models/Entities';
+import { InjectEntityManager } from '@nestjs/typeorm';
+import { ICategoryService } from '../Contracts/ICategoryService';
 export class CategoriesService implements ICategoryService {
   constructor(
     @InjectEntityManager()

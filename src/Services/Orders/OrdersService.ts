@@ -3,9 +3,9 @@ import { ResponseGrid } from '../../Common';
 import { IOrderService } from './../Contracts';
 import { GetOrderDTO, OrderDTO } from './DTO';
 import { InjectEntityManager } from '@nestjs/typeorm';
+import { GridParams } from '../../Common/ResponseFormatter';
 import { EntityManager, SelectQueryBuilder } from 'typeorm';
 import { Customer, Order, Product } from '../../Models/Entities';
-import { GridParams } from '../../Common/ResponseGrid';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import * as responseMessages from '../../../responseMessages.config.json';
 

@@ -1,7 +1,7 @@
 import { ResponseGrid } from '../../Common';
 import { Order } from '../../Models/Entities/Order';
 import { GetOrderDTO, OrderDTO } from '../Orders/DTO';
-import { GridParams } from '../../Common/ResponseGrid';
+import { GridParams } from '../../Common/ResponseFormatter';
 
 export interface IOrderService {
   GetAllOrders(dto: GridParams): Promise<ResponseGrid<Order>>;

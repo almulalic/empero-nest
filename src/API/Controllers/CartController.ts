@@ -1,5 +1,6 @@
 import { Cart } from '../../Models/Entities';
 import { CartService } from '../../Services';
+import { Ok, OkResponse } from '../../Common';
 import { AddToCartDTO } from '../../Services/Cart/DTO';
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 
@@ -13,12 +14,12 @@ export class CartController {
   }
 
   @Post()
-  public async AddToCart(@Body() body: AddToCartDTO): Promise<string> {
-    return await this.CartService.AddToCart(body, 1);
+  public async AddToCart(@Body() body: AddToCartDTO): Promise<OkResponse> {
+    return Ok(await this.CartService.AddToCart(body, 1));
   }
 
   @Delete(':id')
-  public async RemoveFromCart(@Param('id') cartId: number): Promise<string> {
-    return await this.CartService.RemoveFromCart(cartId, 1);
+  public async RemoveFromCart(@Param('id') cartId: number): Promise<OkResponse> {
+    return Ok(await this.CartService.RemoveFromCart(cartId, 1));
   }
 }

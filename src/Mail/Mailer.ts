@@ -1,7 +1,5 @@
-import * as jwt from 'jsonwebtoken';
 import * as sgMail from '@sendgrid/mail';
 import * as mailerConfig from '../../mailer.config.json';
-import { TokenCustomerDTO } from './../Services/Identity/DTO';
 import { Credential } from '../Common/Credential';
 import { Customer } from './../Models/Entities/Customer';
 
