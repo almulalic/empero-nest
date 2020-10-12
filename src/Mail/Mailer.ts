@@ -1,25 +1,26 @@
 import * as jwt from 'jsonwebtoken';
 import * as sgMail from '@sendgrid/mail';
 import * as mailerConfig from '../../mailer.config.json';
-import { TokenCustomerDTO } from './../Services/Customer/DTO';
+import { TokenCustomerDTO } from './../Services/Identity/DTO';
 import { Credential } from '../Common/Credential';
+import { Customer } from './../Models/Entities/Customer';
 
 require('dotenv').config();
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 export class Mailer {
-  public static SendConfirmationEmail = async (id: number, body: TokenCustomerDTO): Promise<string> => {
+  public static SendConfirmationEmail = async (id: number, identity: Customer): Promise<string> => {
     const url =
       process.env.BASE_AUTH_URL + `/accountConfirmation/${await Credential.GenerateConfirmationToken(id, '1d')}`;
 
     return new Promise((resolve, reject) => {
       sgMail
         .send({
-          to: body.email,
+          to: identity.email,
           from: mailerConfig.noReply,
           subject: mailerConfig.confirmation.subject,
-          html: `Hi ${body.firstName} ${body.lastName}! Please click this link to confirm your email <a href="${url}">${url}</a>`,
+          html: `Hi ${identity.firstName} ${identity.lastName}! Please click this link to confirm your email <a href="${url}">${url}</a>`,
         })
         .then(() => {
           resolve(mailerConfig.confirmation.success);
@@ -30,18 +31,18 @@ export class Mailer {
     });
   };
 
-  public static ResendConfirmationEmail = async (customerData): Promise<string> => {
+  public static ResendConfirmationEmail = async (identity: Customer): Promise<string> => {
     const url =
       process.env.BASE_AUTH_URL +
-      `/accountConfirmation/${await Credential.GenerateConfirmationToken(customerData.id, '1d')}`;
+      `/accountConfirmation/${await Credential.GenerateConfirmationToken(identity.id, '1d')}`;
 
     return new Promise((resolve, reject) => {
       sgMail
         .send({
-          to: customerData.email,
+          to: identity.email,
           from: mailerConfig.noReply,
           subject: mailerConfig.confirmation.subject,
-          html: `Hi ${customerData.firstName} ${customerData.lastName}! You requested a new email confirmation mail. Please click this link to confirm your email <a href="${url}">${url}</a> `,
+          html: `Hi ${identity.firstName} ${identity.lastName}! You requested a new email confirmation mail. Please click this link to confirm your email <a href="${url}">${url}</a> `,
         })
         .then(() => {
           resolve(mailerConfig.confirmation.success);
@@ -52,29 +53,29 @@ export class Mailer {
     });
   };
 
-  public SendResetPasswordEmail = async (userData) => {
-    const confirmationToken = jwt.sign({ userIdentityId: userData.id }, process.env.PASSWORD_RESET_SECRET, {
-      expiresIn: '12h',
-    });
-    const url = process.env.APP_URL + `/identity/resetPasswordConfirmation/${confirmationToken}`;
+  public static SendResetPasswordEmail = async (identity: Customer) => {
+    const url =
+      process.env.APP_URL +
+      `/identity/resetPasswordConfirmation/${Credential.GenerateResetPasswordToken(identity, '24h')}`;
 
-    sgMail
-      .send({
-        to: userData.email,
-        from: 'no-reply@enviorment.live',
-        subject: 'Reset password golden spoon',
-        html: ` Please click this link to proceed to password reset <a href="${url}">${url}</a> <input value=${confirmationToken} />`,
-      })
-      .then(() => {
-        return 'EmailSentSuccessfully';
-      })
-      .catch((err) => {
-        console.log(err);
-        return 'EmailNotSent';
-      });
+    return new Promise((resolve, reject) => {
+      sgMail
+        .send({
+          to: identity.email,
+          from: mailerConfig.noReply,
+          subject: 'Reset password golden spoon',
+          html: ` Please click this link to proceed to password reset <a href="${url}">${url}</a>`,
+        })
+        .then(() => {
+          resolve(mailerConfig.confirmation.success);
+        })
+        .catch(() => {
+          resolve(mailerConfig.confirmation.fail);
+        });
+    });
   };
 
-  public SendGenericEmail = async (body) => {
+  public static SendGenericEmail = async (body) => {
     sgMail
       .send({
         from: body.from,

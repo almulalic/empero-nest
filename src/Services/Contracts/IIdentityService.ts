@@ -1,20 +1,22 @@
 import {
-  RegisterDTO,
   LoginDTO,
+  RegisterDTO,
   RefreshTokenDTO,
   LoginResponseDTO,
-  RefreshTokenResponseDTO,
+  ResetPasswordDTO,
   ResendConfirmationDTO,
-} from '../Customer/DTO';
+  RefreshTokenResponseDTO,
+  ConfirmResetPasswordDTO,
+} from '../Identity/DTO';
 
-export interface ICustomerService {
+export interface IIdentityService {
   IsValidEmail(email: string): Promise<boolean>;
   Register(dto: RegisterDTO): Promise<string>;
-  ResendConfirmationToken(body: ResendConfirmationDTO): Promise<string>;
   ChangeConfirmationEmail(body): Promise<string>;
+  ResendConfirmationToken(body: ResendConfirmationDTO): Promise<string>;
   ConfirmIdentity(token: string): Promise<string>;
-  ResetPassword(body): Promise<string>;
-  ConfimPasswordReset(body): Promise<string>;
+  ResetPassword(body: ResetPasswordDTO): Promise<string>;
+  ConfimPasswordReset(body: ConfirmResetPasswordDTO): Promise<string>;
   Login(dto: LoginDTO): Promise<LoginResponseDTO>;
   RefreshToken(dto: RefreshTokenDTO): Promise<RefreshTokenResponseDTO>;
 }

@@ -2,17 +2,24 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { Customer } from '../../Models/Entities';
-import { ICustomerService } from './../Contracts/ICustomerService';
-import { RegisterDTO, LoginDTO, LoginResponseDTO, ResendConfirmationDTO } from './DTO';
+import { IIdentityService } from '../Contracts';
+import {
+  RegisterDTO,
+  LoginDTO,
+  LoginResponseDTO,
+  ResendConfirmationDTO,
+  ChangeConfirmationEmailDTO,
+  ConfirmResetPasswordDTO,
+  ResetPasswordDTO,
+} from './DTO';
 import * as responseMessages from '../../../responseMessages.config.json';
-import { Credential } from './../../Common/Credential';
+import { Credential } from '../../Common/Credential';
 import { TokenCustomerDTO } from './DTO/TokenCustomerDTO';
-import { jwt } from 'jsonwebtoken';
 import { RefreshTokenDTO } from './DTO/RefreshTokenDTO';
 import { Mailer } from '../../Mail/Mailer';
 
 @Injectable()
-export class CustomerService implements ICustomerService {
+export class IdentityService implements IIdentityService {
   constructor(
     @InjectEntityManager()
     private entityManager: EntityManager,
@@ -45,12 +52,26 @@ export class CustomerService implements ICustomerService {
       throw new HttpException(responseMessages.customer.resendConfirmation.nonExistingCustomer, HttpStatus.BAD_REQUEST);
     else if (customer.isConfirmed)
       throw new HttpException(responseMessages.customer.resendConfirmation.alreadyConfirmed, HttpStatus.BAD_REQUEST);
-      
+
     return await Mailer.ResendConfirmationEmail(customer);
   }
 
-  ChangeConfirmationEmail(body: any): Promise<string> {
-    throw new Error('Method not implemented.');
+  public async ChangeConfirmationEmail(dto: ChangeConfirmationEmailDTO): Promise<string> {
+    let customer: Customer = await this.entityManager.getRepository(Customer).findOne({ email: dto.email });
+
+    if (!customer)
+      throw new HttpException(responseMessages.customer.resendConfirmation.nonExistingCustomer, HttpStatus.BAD_REQUEST);
+    else if (customer.isConfirmed)
+      throw new HttpException(responseMessages.customer.resendConfirmation.alreadyConfirmed, HttpStatus.BAD_REQUEST);
+
+    if (!(await Credential.DecryptPassword(dto.password, customer.password)))
+      throw new HttpException(responseMessages.customer.login.customerNotFound, HttpStatus.FORBIDDEN);
+
+    customer.email = dto.newEmail;
+
+    await this.entityManager.getRepository(Customer).save(customer);
+
+    return 'jest';
   }
 
   public async ConfirmIdentity(token: string): Promise<string> {
@@ -68,17 +89,43 @@ export class CustomerService implements ICustomerService {
       .getRepository(Customer)
       .findOne({ id: decodedToken.userIdentityId });
 
+    if (confirmedCustomer.isConfirmed) throw new HttpException('Korisnik vec konfirman', HttpStatus.BAD_REQUEST);
+
     confirmedCustomer.isConfirmed = true;
 
     await this.entityManager.getRepository(Customer).save(confirmedCustomer);
 
     return 'true';
   }
-  ResetPassword(body: any): Promise<string> {
-    throw new Error('Method not implemented.');
+
+  public async ResetPassword(dto: ResetPasswordDTO): Promise<string> {
+    let customer: Customer = await this.entityManager.getRepository(Customer).findOne({ email: dto.email });
+
+    if (!customer)
+      throw new HttpException(responseMessages.customer.resendConfirmation.nonExistingCustomer, HttpStatus.BAD_REQUEST);
+
+    await Mailer.SendResetPasswordEmail(customer);
+
+    return 'jes';
   }
-  ConfimPasswordReset(body: any): Promise<string> {
-    throw new Error('Method not implemented.');
+
+  public async ConfimPasswordReset(dto: ConfirmResetPasswordDTO): Promise<string> {
+    let tokenizedCustomer: any = await Credential.VerifyJWT(dto.token);
+
+    if (!tokenizedCustomer) throw new HttpException('nevalja', HttpStatus.FORBIDDEN);
+
+    let customer: Customer = await this.entityManager
+      .getRepository(Customer)
+      .findOne({ email: tokenizedCustomer.email });
+
+    if (!customer)
+      throw new HttpException(responseMessages.customer.resendConfirmation.nonExistingCustomer, HttpStatus.BAD_REQUEST);
+
+    customer.password = await Credential.EncryptPassword(dto.newPassword);
+
+    await this.entityManager.getRepository(Customer).save(customer);
+
+    return 'jest';
   }
 
   public async Login(dto: LoginDTO): Promise<LoginResponseDTO> {
@@ -91,18 +138,14 @@ export class CustomerService implements ICustomerService {
 
     let tokenUser: TokenCustomerDTO = new TokenCustomerDTO(customer);
 
-    let accessToken = jwt.sign({ currentCustomer: tokenUser }, process.env.JWT_ACCESS_SECRET, {
-      expiresIn: '1h',
-    });
-
-    let refreshToken = jwt.sign({ currentCustomer: tokenUser }, process.env.JWT_REFRESH_SECRET);
+    let refreshToken = await Credential.GenerateRefreshToken(tokenUser, '1h');
 
     customer.refreshToken = refreshToken;
 
     await this.entityManager.getRepository(Customer).save(customer);
 
     return {
-      accessToken: accessToken,
+      accessToken: await Credential.GenerateAccessToken(tokenUser, '1h'),
       refreshToken: refreshToken,
     };
   }
@@ -121,7 +164,7 @@ export class CustomerService implements ICustomerService {
       throw new HttpException(responseMessages.customer.refresh.nonExistingRefreshToken, HttpStatus.UNAUTHORIZED);
 
     return {
-      accessToken: jwt.sign({ currentCustomer: new TokenCustomerDTO(customer) }, process.env.JWT_ACCESS_SECRET),
+      accessToken: await Credential.GenerateAccessToken(new TokenCustomerDTO(customer), '1h'),
     };
   }
 }

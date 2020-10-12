@@ -2,4 +2,4 @@ export { DbModule } from './DbModule';
 export { CartModule } from './CartModule';
 export { OrderModule } from './OrderModule';
 export { ProductModule } from './ProductModule';
-export { CustomerModule } from './CustomerModule';
+export { IdentityModule } from './IdentityModule';
