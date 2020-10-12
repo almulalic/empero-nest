@@ -12,7 +12,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 export class Mailer {
   public static SendConfirmationEmail = async (id: number, identity: Customer): Promise<string> => {
     const url =
-      process.env.BASE_AUTH_URL + `/accountConfirmation/${await Credential.GenerateConfirmationToken(id, '1d')}`;
+      process.env.BASE_APP_URL + `/accountConfirmation/${await Credential.GenerateConfirmationToken(id, '1d')}`;
 
     return new Promise((resolve, reject) => {
       sgMail
@@ -33,8 +33,8 @@ export class Mailer {
 
   public static ResendConfirmationEmail = async (identity: Customer): Promise<string> => {
     const url =
-      process.env.BASE_AUTH_URL +
-      `/accountConfirmation/${await Credential.GenerateConfirmationToken(identity.id, '1d')}`;
+      process.env.BASE_APP_URL +
+      `/identity/accountConfirmation/${await Credential.GenerateConfirmationToken(identity.id, '1d')}`;
 
     return new Promise((resolve, reject) => {
       sgMail
@@ -55,8 +55,8 @@ export class Mailer {
 
   public static SendResetPasswordEmail = async (identity: Customer) => {
     const url =
-      process.env.APP_URL +
-      `/identity/resetPasswordConfirmation/${Credential.GenerateResetPasswordToken(identity, '24h')}`;
+      process.env.BASE_APP_URL +
+      `/identity/resetPasswordConfirmation/${await Credential.GenerateResetPasswordToken(identity, '24h')}`;
 
     return new Promise((resolve, reject) => {
       sgMail

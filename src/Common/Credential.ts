@@ -7,10 +7,10 @@ import { TokenCustomerDTO } from '../Services/Identity/DTO';
 
 export class Credential {
   private static readonly _salt: number = Number(process.env.PASSWORD_SALT);
+  private static readonly _jwtEmailSecret: string = process.env.EMAIL_SECRET;
   private static readonly _jwtAccessSecret: string = process.env.JWT_ACCESS_SECRET;
   private static readonly _jwtRefreshSecret: string = process.env.JWT_REFRESH_SECRET;
-  private static readonly _jwtEmailSecret: string = process.env.EMAIL_SECRET;
-  private static readonly _resetPasswordSecret: string = process.env.RESET_PASSWORD_SECRET;
+  private static readonly _resetPasswordResetSecret: string = process.env.PASSWORD_RESET_SECRET;
 
   public static async EncryptPassword(password: string): Promise<string> {
     return await new Promise((resolve, reject) => {
@@ -41,8 +41,12 @@ export class Credential {
     });
   }
 
-  public static async DecodeConfirmationToken(token: string): Promise<TokenCustomerDTO> {
+  public static async DecodeRegisterConfirmationToken(token: string): Promise<TokenCustomerDTO> {
     return jwt.verify(token, Credential._jwtEmailSecret);
+  }
+
+  public static async DecodePasswordResetToken(token: string): Promise<TokenCustomerDTO> {
+    return jwt.verify(token, Credential._resetPasswordResetSecret);
   }
 
   public static async GenerateAccessToken(tokenCustomer: TokenCustomerDTO, expiresIn: string): Promise<string> {
@@ -58,7 +62,7 @@ export class Credential {
   }
 
   public static async GenerateResetPasswordToken(identity: Customer, expiresIn: string): Promise<string> {
-    return await jwt.sign({ userIdentityId: identity.id }, Credential._resetPasswordSecret, {
+    return await jwt.sign({ id: identity.id }, Credential._resetPasswordResetSecret, {
       expiresIn: expiresIn,
     });
   }

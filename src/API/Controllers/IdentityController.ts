@@ -15,9 +15,9 @@ import { ChangeConfirmationEmailDTO } from './../../Services/Identity/DTO/Change
 export class IdentityController {
   constructor(private readonly IdentityService: IdentityService) {}
 
-  @Get('/:email')
-  public async IsValidEmail(@Param('email') email: string): Promise<boolean> {
-    return await this.IdentityService.IsValidEmail(email);
+  @Get('/isEmailTaken/:email')
+  public async IsEmailTaken(@Param('email') email: string): Promise<boolean> {
+    return await this.IdentityService.IsEmailTaken(email);
   }
 
   @Post('/register')

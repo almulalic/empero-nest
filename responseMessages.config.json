@@ -53,7 +53,7 @@
       "success": "Artikal uspješno arhiviran!"
     }
   },
-  "customer": {
+  "identity": {
     "register": {
       "emailAlreadyInUse": "Email adresa je već u upotrebi!",
       "success": "Uspješno ste se registrovali na Empero Home Webshop."
@@ -71,6 +71,15 @@
     "resendConfirmation": {
       "nonExistingCustomer": "Korisnički račun sa ovom email adresom nije pronađen!",
       "alreadyConfirmed": "Korisnički račun je već potvrđen!"
+    },
+    "passwordResetRequest": {
+      "nonExistingIdentity": "Korisnik nije pronađen",
+      "success": "Zahtjev za promjenu vaše lozinke je prihvaćen. Provjerite vašu email adresu za nastavak!"
+    },
+    "passwordResetConfirmation": {
+      "tokenMalformed": "Vaš token je malformisan. Molimo pokušajte ponovo.",
+      "nonExistingIdentity": "Korisnik nije pronađen",
+      "success": "Uspješno ste promjenili vašu lozinku!"
     }
   },
   "authorization": {

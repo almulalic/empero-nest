@@ -10,7 +10,7 @@ import {
 } from '../Identity/DTO';
 
 export interface IIdentityService {
-  IsValidEmail(email: string): Promise<boolean>;
+  IsEmailTaken(email: string): Promise<boolean>;
   Register(dto: RegisterDTO): Promise<string>;
   ChangeConfirmationEmail(body): Promise<string>;
   ResendConfirmationToken(body: ResendConfirmationDTO): Promise<string>;
