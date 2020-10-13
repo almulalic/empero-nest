@@ -14,10 +14,9 @@ export class ProductsService implements IPrdouctsService {
 
   constructor(
     @InjectEntityManager()
-    private entityManager: EntityManager,
+    private EntityManager: EntityManager,
   ) {
-    this.productsScope = this.entityManager
-      .getRepository(Product)
+    this.productsScope = this.EntityManager.getRepository(Product)
       .createQueryBuilder()
       .innerJoinAndSelect('Product.category', 'Category');
   }
@@ -57,7 +56,7 @@ export class ProductsService implements IPrdouctsService {
   };
 
   public GetProduct = async (productId: number): Promise<Product> => {
-    let product: Product = await this.entityManager.getRepository(Product).findOne({ id: productId });
+    let product: Product = await this.EntityManager.getRepository(Product).findOne({ id: productId });
 
     if (!product) throw new HttpException(responseMessages.product.getOne.nonExistingProduct, HttpStatus.NOT_FOUND);
 
@@ -65,25 +64,25 @@ export class ProductsService implements IPrdouctsService {
   };
 
   public AddPrdouct = async (dto: ProductDTO, productImage: string): Promise<string> => {
-    let category: Category = await this.entityManager.getRepository(Category).findOne({ id: dto.categoryId });
+    let category: Category = await this.EntityManager.getRepository(Category).findOne({ id: dto.categoryId });
 
     if (!category) throw new HttpException(responseMessages.product.add.nonExistingCategory, HttpStatus.NOT_FOUND);
 
     dto.image = productImage;
 
-    await this.entityManager.getRepository(Product).insert(dto);
+    await this.EntityManager.getRepository(Product).insert(dto);
 
     return responseMessages.product.add.success;
   };
 
   public ModifyProduct = async (productId: number, dto: ProductDTO, productImage: string): Promise<string> => {
-    let product: Product = await this.entityManager.getRepository(Product).findOne({ id: productId });
+    let product: Product = await this.EntityManager.getRepository(Product).findOne({ id: productId });
 
     if (!product) throw new HttpException(responseMessages.product.modify.nonExistingProduct, HttpStatus.NOT_FOUND);
 
     // If category changed
     if (product.categoryId !== dto.categoryId) {
-      let category: Category = await this.entityManager.getRepository(Category).findOne({ id: dto.categoryId });
+      let category: Category = await this.EntityManager.getRepository(Category).findOne({ id: dto.categoryId });
 
       if (!category) throw new HttpException(responseMessages.product.modify.nonExistingCategory, HttpStatus.NOT_FOUND);
     }
@@ -95,19 +94,19 @@ export class ProductsService implements IPrdouctsService {
     modifiedProduct.createdAt = product.createdAt;
     modifiedProduct.archivedAt = product.archivedAt;
 
-    await this.entityManager.getRepository(Product).save(modifiedProduct);
+    await this.EntityManager.getRepository(Product).save(modifiedProduct);
 
     return responseMessages.product.modify.success;
   };
 
   public DeleteProduct = async (productId: number): Promise<string> => {
-    let product: Product = await this.entityManager.getRepository(Product).findOne({ id: productId });
+    let product: Product = await this.EntityManager.getRepository(Product).findOne({ id: productId });
 
     if (!product) throw new HttpException(responseMessages.product.remove.nonExistingProduct, HttpStatus.NOT_FOUND);
     else if (product.archivedAt !== null)
       throw new HttpException(responseMessages.product.remove.alreadyArchivedProduct, HttpStatus.NOT_FOUND);
 
-    await this.entityManager.getRepository(Product).update(product.id, { archivedAt: DateTime.utc().toSQL() });
+    await this.EntityManager.getRepository(Product).update(product.id, { archivedAt: DateTime.utc().toSQL() });
 
     return responseMessages.product.remove.success;
   };

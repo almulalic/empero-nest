@@ -5,10 +5,10 @@ import { ICategoryService } from '../Contracts/ICategoryService';
 export class CategoriesService implements ICategoryService {
   constructor(
     @InjectEntityManager()
-    private entityManager: EntityManager,
+    private EntityManager: EntityManager,
   ) {}
 
   public async GetCategories(): Promise<Category[]> {
-    return await this.entityManager.getRepository(Category).find();
+    return await this.EntityManager.getRepository(Category).find();
   }
 }

@@ -73,8 +73,9 @@
       "alreadyConfirmed": "Korisnički račun je već potvrđen!",
       "success": "Zahtjev za ponovnu konfirmaciju uspješno poslan na vašu email adresu!"
     },
-    "confirmIdetity": {
+    "confirmIdentity": {
       "tokenMalformed": "Konfrimacijski token je malformisan. Molimo pokušajte ponovo.",
+      "tokenExpieredOrInvalid": "Aktivacijski token je istekao ili više nije validan. Molimo pokušajte ponovo",
       "alreadyConfirmed": "Korisnički račun je već potvrđen!",
       "success": "Uspješno ste verifikovali vašu email adresu!"
     },
@@ -84,6 +85,7 @@
     },
     "passwordResetConfirmation": {
       "tokenMalformed": "Vaš token je malformisan. Molimo pokušajte ponovo.",
+      "tokenExpieredOrInvalid": "Aktivacijski token je istekao ili više nije validan. Molimo pokušajte ponovo",
       "nonExistingIdentity": "Korisnik nije pronađen",
       "success": "Uspješno ste promjenili vašu lozinku!"
     }

@@ -8,9 +8,8 @@ require('dotenv').config();
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 export class Mailer {
-  public static SendConfirmationEmail = async (id: number, identity: Customer): Promise<string> => {
-    const url =
-      process.env.BASE_APP_URL + `/accountConfirmation/${await Credential.GenerateConfirmationToken(id, '1d')}`;
+  public static SendConfirmationEmail = async (identity: Customer, token: string): Promise<string> => {
+    const url = process.env.BASE_APP_URL + `/accountConfirmation/${token}`;
 
     return new Promise((resolve, reject) => {
       sgMail
@@ -29,10 +28,8 @@ export class Mailer {
     });
   };
 
-  public static ResendConfirmationEmail = async (identity: Customer): Promise<string> => {
-    const url =
-      process.env.BASE_APP_URL +
-      `/identity/accountConfirmation/${await Credential.GenerateConfirmationToken(identity.id, '1d')}`;
+  public static ResendConfirmationEmail = async (identity: Customer, token: string): Promise<string> => {
+    const url = process.env.BASE_APP_URL + `/identity/accountConfirmation/${token}`;
 
     return new Promise((resolve, reject) => {
       sgMail
@@ -51,10 +48,8 @@ export class Mailer {
     });
   };
 
-  public static SendResetPasswordEmail = async (identity: Customer) => {
-    const url =
-      process.env.BASE_APP_URL +
-      `/identity/resetPasswordConfirmation/${await Credential.GenerateResetPasswordToken(identity, '24h')}`;
+  public static SendResetPasswordEmail = async (identity: Customer, token: string) => {
+    const url = process.env.BASE_APP_URL + `/identity/resetPasswordConfirmation/${token}`;
 
     return new Promise((resolve, reject) => {
       sgMail

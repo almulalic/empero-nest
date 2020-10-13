@@ -33,35 +33,35 @@ export class Credential {
     });
   }
 
-  public static async GenerateConfirmationToken(id: number, expiresIn: string): Promise<string> {
-    return await jwt.sign({ userIdentityId: id }, Credential._jwtEmailSecret, {
-      expiresIn: expiresIn,
+  public static async GenerateConfirmationToken(id: number, duration: string): Promise<string> {
+    return await jwt.sign({ identityId: id }, Credential._jwtEmailSecret, {
+      expiresIn: duration,
     });
   }
 
-  public static async DecodeRegisterConfirmationToken(token: string): Promise<TokenCustomerDTO> {
+  public static async DecodeRegisterConfirmationToken(token: string): Promise<any> {
     return jwt.verify(token, Credential._jwtEmailSecret);
   }
 
-  public static async DecodePasswordResetToken(token: string): Promise<TokenCustomerDTO> {
+  public static async DecodePasswordResetToken(token: string): Promise<any> {
     return jwt.verify(token, Credential._resetPasswordResetSecret);
   }
 
-  public static async GenerateAccessToken(tokenCustomer: TokenCustomerDTO, expiresIn: string): Promise<string> {
+  public static async GenerateAccessToken(tokenCustomer: TokenCustomerDTO, duration: string): Promise<string> {
     return await jwt.sign({ currentCustomer: tokenCustomer }, Credential._jwtAccessSecret, {
-      expiresIn: expiresIn,
+      expiresIn: duration,
     });
   }
 
-  public static async GenerateRefreshToken(tokenCustomer: TokenCustomerDTO, expiresIn: string): Promise<string> {
+  public static async GenerateRefreshToken(tokenCustomer: TokenCustomerDTO, duration: string): Promise<string> {
     return await jwt.sign({ currentCustomer: tokenCustomer }, Credential._jwtRefreshSecret, {
-      expiresIn: expiresIn,
+      expiresIn: duration,
     });
   }
 
-  public static async GenerateResetPasswordToken(identity: Customer, expiresIn: string): Promise<string> {
+  public static async GenerateResetPasswordToken(identity: Customer, duration: string): Promise<string> {
     return await jwt.sign({ id: identity.id }, Credential._resetPasswordResetSecret, {
-      expiresIn: expiresIn,
+      expiresIn: duration,
     });
   }
 }
