@@ -25,7 +25,6 @@ export class IdentityService implements IIdentityService {
   constructor(
     @InjectEntityManager()
     private EntityManager: EntityManager,
-
     private TokenLogger: TokenLogger,
   ) {}
 
@@ -180,10 +179,10 @@ export class IdentityService implements IIdentityService {
     customer.refreshToken = refreshToken;
 
     await this.EntityManager.getRepository(Customer).save(customer);
-
+    console.log('this');
     return {
-      accessToken: await Credential.GenerateAccessToken(tokenUser, '1h'),
-      refreshToken: refreshToken,
+      access_token: await Credential.GenerateAccessToken(tokenUser, '1h'),
+      refresh_token: refreshToken,
     };
   }
 
