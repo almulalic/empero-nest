@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-
 import {
   DbModule,
   CartModule,
@@ -9,9 +8,20 @@ import {
   CategoryModule,
   TokenLogModule,
 } from './Modules';
+import { ImagerModule } from './../Image/ImagerModule';
 
 @Module({
-  imports: [DbModule, CartModule, ProductModule, OrderModule, IdentityModule, CategoryModule, TokenLogModule],
+  imports: [
+    DbModule,
+    CartModule,
+    ProductModule,
+    OrderModule,
+    IdentityModule,
+    CategoryModule,
+    TokenLogModule,
+    ImagerModule,
+  ],
+
   exports: [TokenLogModule],
 })
 export class AppModule {}

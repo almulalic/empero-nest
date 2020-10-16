@@ -1,7 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Cart } from "./Cart";
 import { Order } from "./Order";
-import { Tokenlog } from "./Tokenlog";
 
 @Entity("customer", { schema: "heroku_42df861642a2ede" })
 export class Customer {
@@ -47,15 +46,9 @@ export class Customer {
   @Column("varchar", { name: "refreshToken", nullable: true, length: 300 })
   refreshToken: string | null;
 
-  @Column("tinyint", { name: "isConfirmed", default: () => "'0'" })
-  isConfirmed: number;
-
   @OneToMany(() => Cart, (cart) => cart.customer)
   carts: Cart[];
 
   @OneToMany(() => Order, (order) => order.customer)
   orders: Order[];
-
-  @OneToMany(() => Tokenlog, (tokenlog) => tokenlog.identity)
-  tokenlogs: Tokenlog[];
 }

@@ -2,9 +2,10 @@ import { DateTime } from 'luxon';
 import { ProductDTO } from './DTO';
 import { IPrdouctsService } from '../Contracts';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { Category, Product } from '../../Models/Entities';
+import { ImagerService } from './../../Image/ImagerService';
 import { EntityManager, SelectQueryBuilder } from 'typeorm';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Category, Product, Productimage } from '../../Models/Entities';
 import * as responseMessages from '../../../responseMessages.config.json';
 import { GridParams, ResponseGrid } from '../../Common/ResponseFormatter';
 
@@ -14,73 +15,75 @@ export class ProductsService implements IPrdouctsService {
 
   constructor(
     @InjectEntityManager()
-    private EntityManager: EntityManager,
+    private readonly EntityManager: EntityManager,
+    private readonly ImagerService: ImagerService,
   ) {
     this.productsScope = this.EntityManager.getRepository(Product)
       .createQueryBuilder()
       .innerJoinAndSelect('Product.category', 'Category');
   }
 
-  public GetAllProducts = async (dto: GridParams): Promise<ResponseGrid<Product>> => {
+  public async GetAllProducts(dto: GridParams): Promise<ResponseGrid<Product>> {
     let products: Product[] = await this.productsScope
       .where('Product.archivedAt IS NULL')
       .orderBy(`Product.${dto.sortBy || 'createdAt'}`, dto.order || 'ASC')
       .getMany();
 
     return new ResponseGrid(products).GetGridData(dto);
-  };
+  }
 
-  public GetArchive = async (dto: GridParams): Promise<ResponseGrid<Product>> => {
+  public async GetArchive(dto: GridParams): Promise<ResponseGrid<Product>> {
     let archive: Product[] = await this.productsScope
       .where('Product.archivedAt IS NOT NULL')
       .orderBy(`Product.${dto.sortBy || `createdAt`}`, dto.order || 'ASC')
       .getMany();
 
     return new ResponseGrid(archive).GetGridData(dto);
-  };
+  }
 
-  public GetRecommended = async (): Promise<Product[]> => {
+  public async GetRecommended(): Promise<Product[]> {
     return (await this.productsScope
       .where('Product.archivedAt IS NULL')
       .andWhere('Product.isRecommended = true')
       .getMany()) as Product[];
-  };
+  }
 
-  public GetSuggested = async (categoryId: number): Promise<Product[]> => {
+  public async GetSuggested(categoryId: number): Promise<Product[]> {
     return (await this.productsScope
       .where('Product.categoryId = :categoryId', { categoryId: categoryId })
       .andWhere('Product.archivedAt IS NULL')
       .orderBy('RAND()')
       .take(4)
       .getMany()) as Product[];
-  };
+  }
 
-  public GetProduct = async (productId: number): Promise<Product> => {
+  public async GetProduct(productId: number): Promise<Product> {
     let product: Product = await this.EntityManager.getRepository(Product).findOne({ id: productId });
 
     if (!product) throw new HttpException(responseMessages.product.getOne.nonExistingProduct, HttpStatus.NOT_FOUND);
 
     return product;
-  };
+  }
 
-  public AddPrdouct = async (dto: ProductDTO, productImage: string): Promise<string> => {
+  public async AddPrdouct(dto: ProductDTO, productImages): Promise<string> {
     let category: Category = await this.EntityManager.getRepository(Category).findOne({ id: dto.categoryId });
 
     if (!category) throw new HttpException(responseMessages.product.add.nonExistingCategory, HttpStatus.NOT_FOUND);
 
-    dto.image = productImage;
+    let productId = (await this.EntityManager.getRepository(Product).insert(dto)).generatedMaps[0].id;
 
-    await this.EntityManager.getRepository(Product).insert(dto);
+    productImages.forEach(async (productImage) => {
+      await this.ImagerService.UploadProductImage(productImage.buffer, productId);
+    });
 
     return responseMessages.product.add.success;
-  };
+  }
 
-  public ModifyProduct = async (productId: number, dto: ProductDTO, productImage: string): Promise<string> => {
+  public async ModifyProduct(productId: number, dto: ProductDTO): Promise<string> {
     let product: Product = await this.EntityManager.getRepository(Product).findOne({ id: productId });
 
     if (!product) throw new HttpException(responseMessages.product.modify.nonExistingProduct, HttpStatus.NOT_FOUND);
 
-    // If category changed
     if (product.categoryId !== dto.categoryId) {
       let category: Category = await this.EntityManager.getRepository(Category).findOne({ id: dto.categoryId });
 
@@ -90,24 +93,31 @@ export class ProductsService implements IPrdouctsService {
     let modifiedProduct: Product = dto;
 
     modifiedProduct.id = product.id;
-    modifiedProduct.image = productImage;
     modifiedProduct.createdAt = product.createdAt;
     modifiedProduct.archivedAt = product.archivedAt;
 
     await this.EntityManager.getRepository(Product).save(modifiedProduct);
 
     return responseMessages.product.modify.success;
-  };
+  }
 
-  public DeleteProduct = async (productId: number): Promise<string> => {
+  public async DeleteProduct(productId: number): Promise<string> {
     let product: Product = await this.EntityManager.getRepository(Product).findOne({ id: productId });
 
     if (!product) throw new HttpException(responseMessages.product.remove.nonExistingProduct, HttpStatus.NOT_FOUND);
     else if (product.archivedAt !== null)
       throw new HttpException(responseMessages.product.remove.alreadyArchivedProduct, HttpStatus.NOT_FOUND);
 
+    let productImages: Productimage[] = await this.EntityManager.getRepository(Productimage).find({
+      productId: product.id,
+    });
+
+    productImages.forEach(async (productImage: Productimage) => {
+      await this.ImagerService.DeleteImage(productImage.id);
+    });
+
     await this.EntityManager.getRepository(Product).update(product.id, { archivedAt: DateTime.utc().toSQL() });
 
     return responseMessages.product.remove.success;
-  };
+  }
 }

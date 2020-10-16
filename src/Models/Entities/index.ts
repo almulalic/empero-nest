@@ -4,3 +4,4 @@ export { Product } from './Product';
 export { Category } from './Category';
 export { Customer } from './Customer';
 export { TokenLog } from './TokenLog';
+export { Productimage } from './Productimage';

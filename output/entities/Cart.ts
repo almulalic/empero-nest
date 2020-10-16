@@ -40,6 +40,9 @@ export class Cart {
   })
   modifiedAt: Date;
 
+  @Column("datetime", { name: "archivedAt" })
+  archivedAt: Date;
+
   @ManyToOne(() => Product, (product) => product.carts, {
     onDelete: "RESTRICT",
     onUpdate: "RESTRICT",

@@ -1,12 +1,4 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from "typeorm";
-import { Customer } from "./Customer";
+import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
 
 @Index("tokens_customer_id_fk", ["identityId"], {})
 @Entity("tokenlog", { schema: "heroku_42df861642a2ede" })
@@ -33,21 +25,14 @@ export class Tokenlog {
   expiresAt: Date;
 
   @Column("timestamp", {
-    name: "createdAt",
-    default: () => "CURRENT_TIMESTAMP",
-  })
-  createdAt: Date;
-
-  @Column("timestamp", {
     name: "modifiedAt",
     default: () => "CURRENT_TIMESTAMP",
   })
   modifiedAt: Date;
 
-  @ManyToOne(() => Customer, (customer) => customer.tokenlogs, {
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
+  @Column("timestamp", {
+    name: "createdAt",
+    default: () => "CURRENT_TIMESTAMP",
   })
-  @JoinColumn([{ name: "identityId", referencedColumnName: "id" }])
-  identity: Customer;
+  createdAt: Date;
 }

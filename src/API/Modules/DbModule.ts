@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Cart, Customer, Order, Product, Category, TokenLog } from '../../Models/Entities';
+import { Cart, Customer, Order, Product, Category, TokenLog, Productimage } from '../../Models/Entities';
 
 require('dotenv').config();
 @Module({
@@ -15,7 +15,7 @@ require('dotenv').config();
       database: process.env.DB_TABLE_NAME,
       synchronize: Boolean(Number(process.env.DB_SYNC)),
       logging: Boolean(Number(process.env.DB_LOGGING)),
-      entities: [Cart, Product, Customer, Order, Category, TokenLog],
+      entities: [Cart, Product, Customer, Order, Category, TokenLog, Productimage],
       cli: {
         entitiesDir: 'src/Models/Entities',
         migrationsDir: 'src/Models/Migrations',

@@ -1,63 +1,56 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from "typeorm";
-import { Cart } from "./Cart";
-import { Order } from "./Order";
-import { Category } from "./Category";
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Cart } from './Cart';
+import { Order } from './Order';
+import { Category } from './Category';
+import { Productimage } from '../../src/Models/Entities/Productimage';
 
-@Index("categoryId", ["categoryId"], {})
-@Entity("product", { schema: "heroku_42df861642a2ede" })
+@Index('categoryId', ['categoryId'], {})
+@Entity('product', { schema: 'heroku_42df861642a2ede' })
 export class Product {
-  @PrimaryGeneratedColumn({ type: "int", name: "id" })
+  @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
-  @Column("varchar", { name: "heading", length: 100 })
+  @Column('varchar', { name: 'heading', length: 100 })
   heading: string;
 
-  @Column("text", { name: "subheading", nullable: true })
+  @Column('text', { name: 'subheading', nullable: true })
   subheading: string | null;
 
-  @Column("int", { name: "categoryId" })
+  @Column('int', { name: 'categoryId' })
   categoryId: number;
 
-  @Column("varchar", { name: "image", nullable: true, length: 200 })
-  image: string | null;
-
-  @Column("text", { name: "description" })
+  @Column('text', { name: 'description' })
   description: string;
 
-  @Column("text", { name: "fullDescription", nullable: true })
+  @Column('text', { name: 'fullDescription', nullable: true })
   fullDescription: string | null;
 
-  @Column("float", { name: "price", precision: 12 })
+  @Column('float', { name: 'price', precision: 12 })
   price: number;
 
-  @Column("float", { name: "secondPrice", nullable: true, precision: 12 })
+  @Column('float', { name: 'secondPrice', nullable: true, precision: 12 })
   secondPrice: number | null;
 
-  @Column("tinyint", { name: "isRecommended", default: () => "'0'" })
+  @Column('tinyint', { name: 'isRecommended', default: () => "'0'" })
   isRecommended: number;
 
-  @Column("timestamp", {
-    name: "createdAt",
-    default: () => "CURRENT_TIMESTAMP",
+  @Column('timestamp', {
+    name: 'createdAt',
+    default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
 
-  @Column("timestamp", {
-    name: "modifiedAt",
-    default: () => "CURRENT_TIMESTAMP",
+  @Column('timestamp', {
+    name: 'modifiedAt',
+    default: () => 'CURRENT_TIMESTAMP',
   })
   modifiedAt: Date;
 
-  @Column("datetime", { name: "archivedAt", nullable: true })
+  @Column('datetime', { name: 'archivedAt', nullable: true })
   archivedAt: Date | null;
+
+  @Column('varchar', { name: 'image', nullable: true, length: 200 })
+  image: string | null;
 
   @OneToMany(() => Cart, (cart) => cart.product)
   carts: Cart[];
@@ -66,9 +59,12 @@ export class Product {
   orders: Order[];
 
   @ManyToOne(() => Category, (category) => category.products, {
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
+    onDelete: 'RESTRICT',
+    onUpdate: 'RESTRICT',
   })
-  @JoinColumn([{ name: "categoryId", referencedColumnName: "id" }])
+  @JoinColumn([{ name: 'categoryId', referencedColumnName: 'id' }])
   category: Category;
+
+  @OneToMany(() => Productimage, (productimage) => productimage.product)
+  productimages: Productimage[];
 }

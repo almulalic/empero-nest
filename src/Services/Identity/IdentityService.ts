@@ -169,6 +169,9 @@ export class IdentityService implements IIdentityService {
 
     if (!customer) throw new HttpException(responseMessages.identity.login.customerNotFound, HttpStatus.NOT_FOUND);
 
+    if (!customer.isConfirmed)
+      throw new HttpException(responseMessages.identity.login.notConfirmed, HttpStatus.BAD_REQUEST);
+
     if (!(await Credential.DecryptPassword(dto.password, customer.password)))
       throw new HttpException(responseMessages.identity.login.wrongPassword, HttpStatus.FORBIDDEN);
 
@@ -179,7 +182,7 @@ export class IdentityService implements IIdentityService {
     customer.refreshToken = refreshToken;
 
     await this.EntityManager.getRepository(Customer).save(customer);
-    console.log('this');
+
     return {
       access_token: await Credential.GenerateAccessToken(tokenUser, '1h'),
       refresh_token: refreshToken,

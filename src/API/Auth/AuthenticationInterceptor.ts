@@ -7,15 +7,17 @@ import { TokenCustomerDTO } from './../../Services/Identity/DTO/TokenCustomerDTO
 @Injectable()
 export class AuthenticationInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const token = context.switchToHttp().getRequest().headers['x-token'].slice(7);
+    let token = context.switchToHttp().getRequest().headers['x-token'];
 
     if (token) {
+      token = token.slice(7);
+
       jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, decodedToken: TokenCustomerDTO) => {
         if (err) throw new HttpException(responseMessages.authorization.tokenMalformet, HttpStatus.UNAUTHORIZED);
 
-        context.switchToHttp().getRequest().currentCustomer = decodedToken;
+        context.switchToHttp().getRequest().currentCustomer = Object.values(decodedToken)[0];
       });
-    } else throw new HttpException(responseMessages.authorization.invalidToken, HttpStatus.UNAUTHORIZED);
+    } else throw new HttpException(responseMessages.authorization.missingToken, HttpStatus.UNAUTHORIZED);
 
     return next.handle();
   }

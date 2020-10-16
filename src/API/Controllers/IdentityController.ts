@@ -10,7 +10,7 @@ import {
 } from '../../Services/Identity/DTO';
 import { Ok, OkResponse } from '../../Common';
 import { IdentityService } from './../../Services';
-import { Body, Controller, Get, Param, Post, UseGuards, Request } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards, Request, HttpCode, HttpStatus } from '@nestjs/common';
 import { ChangeConfirmationEmailDTO } from './../../Services/Identity/DTO/ChangeConfirmationEmailDTO';
 import { AuthGuard } from '@nestjs/passport';
 @Controller('identity')
@@ -52,6 +52,7 @@ export class IdentityController {
     return Ok(await this.IdentityService.ConfimPasswordReset(body));
   }
 
+  @HttpCode(HttpStatus.OK)
   @Post('/login')
   public async Login(@Body() dto: LoginDTO): Promise<LoginResponseDTO> {
     return await this.IdentityService.Login(dto);

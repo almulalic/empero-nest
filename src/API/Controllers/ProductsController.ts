@@ -3,9 +3,27 @@ import { Product } from '../../Models/Entities';
 import { ProductsService } from '../../Services';
 import { ProductDTO } from '../../Services/Products/DTO';
 import { GridParams, Ok, OkResponse } from '../../Common/ResponseFormatter';
-import { Controller, Get, Post, Body, Delete, Param, Put, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Delete,
+  Param,
+  Put,
+  HttpCode,
+  HttpStatus,
+  UseInterceptors,
+  Header,
+  UploadedFiles,
+} from '@nestjs/common';
+import { AuthorizationInterceptor } from '../Auth/AuthorizationInterceptor';
+import { AuthenticationInterceptor } from '../Auth/AuthenticationInterceptor';
+import { FilesInterceptor } from '@nestjs/platform-express/multer/interceptors/files.interceptor';
+import { classToPlain } from 'class-transformer';
 
 @Controller('products')
+@UseInterceptors(AuthenticationInterceptor)
 export class ProductsController {
   constructor(private readonly ProductsService: ProductsService) {}
 
@@ -17,6 +35,7 @@ export class ProductsController {
 
   @Post('/archive')
   @HttpCode(HttpStatus.OK)
+  @UseInterceptors(AuthorizationInterceptor)
   public async GetArchive(@Body() body: GridParams): Promise<ResponseGrid<Product>> {
     return await this.ProductsService.GetArchive(body);
   }
@@ -31,22 +50,26 @@ export class ProductsController {
     return await this.ProductsService.GetSuggested(categoryId);
   }
 
-  @Get('/suggested/:productId')
+  @Get('/:productId')
   public async GetProduct(@Param('productId') productId: number): Promise<Product> {
     return await this.ProductsService.GetProduct(productId);
   }
 
   @Post()
-  public async AddProduct(@Body() body: ProductDTO): Promise<OkResponse> {
-    return Ok(await this.ProductsService.AddPrdouct(body, null));
+  @UseInterceptors(FilesInterceptor('image'))
+  @UseInterceptors(AuthorizationInterceptor)
+  public async AddProduct(@Body() body: ProductDTO, @UploadedFiles() productImages): Promise<OkResponse> {
+    return Ok(await this.ProductsService.AddPrdouct(classToPlain(body) as ProductDTO, productImages));
   }
 
   @Put('/:productId')
+  @UseInterceptors(AuthorizationInterceptor)
   public async ModifyProduct(@Param('productId') productId: number, @Body() body: ProductDTO): Promise<OkResponse> {
-    return Ok(await this.ProductsService.ModifyProduct(productId, body, null));
+    return Ok(await this.ProductsService.ModifyProduct(productId, body));
   }
 
   @Delete('/:productId')
+  @UseInterceptors(AuthorizationInterceptor)
   public async DeleteProduct(@Param('productId') productId: number): Promise<OkResponse> {
     return Ok(await this.ProductsService.DeleteProduct(productId));
   }
