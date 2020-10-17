@@ -2,9 +2,8 @@ import { Cart } from '../../Models/Entities';
 import { CartService } from '../../Services';
 import { Ok, OkResponse } from '../../Common';
 import { AddToCartDTO } from '../../Services/Cart/DTO';
-import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards, UseInterceptors } from '@nestjs/common';
-import { AuthorizationInterceptor } from '../Auth/AuthorizationInterceptor';
 import { AuthenticationInterceptor } from '../Auth/AuthenticationInterceptor';
+import { Body, Controller, Delete, Get, Param, Post, Req, UseInterceptors } from '@nestjs/common';
 
 @Controller('cart')
 @UseInterceptors(AuthenticationInterceptor)

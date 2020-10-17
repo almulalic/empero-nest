@@ -4,6 +4,5 @@ import { AppModule } from './API/AppModule';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   await app.listen(5000);
-  console.log(Math.random() + 'test');
 }
 bootstrap();

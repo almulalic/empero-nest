@@ -1,13 +1,28 @@
 #!/bin/bash
-echo -e "\e[92mWelcome to the simple migrations creator"
-echo -e "\e[1mEnter migration name: "
-read migrationName;
 
-echo -e "\e[1mEnter description?: "
-read description
+printf "${LBLUE}Welcome${NC} to the simple TYPEORM migrations creator.\n"
 
-echo "Migration name: " migrationName
-echo "Description: " description
+isOkay="n"
 
-echo "Migration generated successfully "
+while [ $isOkay = "n" ]
+do
+    printf "\nEnter migration name: "
+    read migrationName;
+
+    printf "\e[1mEnter description: "   
+    read description
+
+    printf "\nMigration name: $migrationName \n" 
+    printf "Description: $description \n" 
+
+    printf "\nIs this okay ? (Y/n): "
+    read isOkay
+
+    if [ $isOkay = "n"] 
+    printf "\033c"
+done
+
+printf "\nGenerating migration...\n"
+
+printf "\nMigration generated successfully "
 #/ts-node ./node_modules/typeorm/cli.js migration:generate -n

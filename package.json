@@ -1,8 +1,8 @@
 {
-  "name": "nest-typescript-starter",
+  "name": "WebShop API",
   "private": true,
-  "version": "1.0.0",
-  "description": "Nest TypeScript starter repository",
+  "version": "2.5.0",
+  "description": "Full fledge WebShop API system with 3 integrated microservice-like services (Mailer,Imager,Logger)",
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",

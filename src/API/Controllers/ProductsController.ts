@@ -1,26 +1,25 @@
+import {
+  Get,
+  Put,
+  Post,
+  Body,
+  Param,
+  Delete,
+  HttpCode,
+  Controller,
+  HttpStatus,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ResponseGrid } from '../../Common';
 import { Product } from '../../Models/Entities';
 import { ProductsService } from '../../Services';
+import { classToPlain } from 'class-transformer';
 import { ProductDTO } from '../../Services/Products/DTO';
 import { GridParams, Ok, OkResponse } from '../../Common/ResponseFormatter';
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Delete,
-  Param,
-  Put,
-  HttpCode,
-  HttpStatus,
-  UseInterceptors,
-  Header,
-  UploadedFiles,
-} from '@nestjs/common';
 import { AuthorizationInterceptor } from '../Auth/AuthorizationInterceptor';
 import { AuthenticationInterceptor } from '../Auth/AuthenticationInterceptor';
 import { FilesInterceptor } from '@nestjs/platform-express/multer/interceptors/files.interceptor';
-import { classToPlain } from 'class-transformer';
 
 @Controller('products')
 @UseInterceptors(AuthenticationInterceptor)
