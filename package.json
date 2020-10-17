@@ -1,5 +1,5 @@
 {
-  "name": "WebShop API",
+  "name": "webshopapi",
   "private": true,
   "version": "2.5.0",
   "description": "Full fledge WebShop API system with 3 integrated microservice-like services (Mailer,Imager,Logger)",
