@@ -2,10 +2,10 @@ import { DateTime } from 'luxon';
 import { ProductDTO } from './DTO';
 import { IPrdouctsService } from '../Contracts';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { ImagerService } from './../../Image/ImagerService';
+import { ImagerService } from '../../Microservices/Image/ImagerService';
 import { EntityManager, SelectQueryBuilder } from 'typeorm';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { Category, Product, Productimage } from '../../Models/Entities';
+import { Category, Product, ProductImage } from '../../Models/Entities';
 import * as responseMessages from '../../../responseMessages.config.json';
 import { GridParams, ResponseGrid } from '../../Common/ResponseFormatter';
 
@@ -65,15 +65,15 @@ export class ProductsService implements IPrdouctsService {
     return product;
   }
 
-  public async AddPrdouct(dto: ProductDTO, productImages): Promise<string> {
+  public async AddPrdouct(dto: ProductDTO, ProductImages): Promise<string> {
     let category: Category = await this.EntityManager.getRepository(Category).findOne({ id: dto.categoryId });
 
     if (!category) throw new HttpException(responseMessages.product.add.nonExistingCategory, HttpStatus.NOT_FOUND);
 
     let productId = (await this.EntityManager.getRepository(Product).insert(dto)).generatedMaps[0].id;
 
-    productImages.forEach(async (productImage) => {
-      await this.ImagerService.UploadProductImage(productImage.buffer, productId);
+    ProductImages.forEach(async (ProductImage) => {
+      await this.ImagerService.UploadProductImage(ProductImage.buffer, productId);
     });
 
     return responseMessages.product.add.success;
@@ -108,12 +108,12 @@ export class ProductsService implements IPrdouctsService {
     else if (product.archivedAt !== null)
       throw new HttpException(responseMessages.product.remove.alreadyArchivedProduct, HttpStatus.NOT_FOUND);
 
-    let productImages: Productimage[] = await this.EntityManager.getRepository(Productimage).find({
+    let ProductImages: ProductImage[] = await this.EntityManager.getRepository(ProductImage).find({
       productId: product.id,
     });
 
-    productImages.forEach(async (productImage: Productimage) => {
-      await this.ImagerService.DeleteImage(productImage.id);
+    ProductImages.forEach(async (ProductImage: ProductImage) => {
+      await this.ImagerService.DeleteImage(ProductImage.id);
     });
 
     await this.EntityManager.getRepository(Product).update(product.id, { archivedAt: DateTime.utc().toSQL() });

@@ -1,7 +1,6 @@
 import * as sgMail from '@sendgrid/mail';
-import * as mailerConfig from '../../mailer.config.json';
-import { Credential } from '../Common/Credential';
-import { Customer } from './../Models/Entities/Customer';
+import * as mailerConfig from '../../../mailer.config.json';
+import { Customer } from '../../Models/Entities/Customer';
 
 require('dotenv').config();
 

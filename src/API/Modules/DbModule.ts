@@ -1,21 +1,35 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Cart, Customer, Order, Product, Category, TokenLog, Productimage } from '../../Models/Entities';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
+import { Cart, Customer, Order, Product, Category, Image, TokenLog, ProductImage } from '../../Models/Entities';
 
 require('dotenv').config();
+
+const {
+  DB_NAME,
+  DB_TYPE,
+  DB_HOST,
+  DB_PORT,
+  DB_USERNAME,
+  DB_PASSWORD,
+  DB_TABLE_NAME,
+  DB_SYNC,
+  DB_LOGGING,
+} = process.env;
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      name: process.env.DB_NAME,
-      type: 'mysql',
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT),
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_TABLE_NAME,
-      synchronize: Boolean(Number(process.env.DB_SYNC)),
-      logging: Boolean(Number(process.env.DB_LOGGING)),
-      entities: [Cart, Product, Customer, Order, Category, TokenLog, Productimage],
+      name: DB_NAME,
+      type: DB_TYPE as MysqlConnectionOptions['type'],
+      host: DB_HOST,
+      port: Number(DB_PORT),
+      username: DB_USERNAME,
+      password: DB_PASSWORD,
+      database: DB_TABLE_NAME,
+      synchronize: Boolean(Number(DB_SYNC)),
+      logging: Boolean(Number(DB_LOGGING)),
+      entities: [Cart, Product, Customer, Order, Image, Category, TokenLog, ProductImage],
       cli: {
         entitiesDir: 'src/Models/Entities',
         migrationsDir: 'src/Models/Migrations',

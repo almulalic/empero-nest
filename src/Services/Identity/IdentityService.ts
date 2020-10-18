@@ -8,14 +8,13 @@ import {
   ResetPasswordDTO,
 } from './DTO';
 import { EntityManager } from 'typeorm';
-import { Mailer } from '../../Mail/Mailer';
+import { Mailer } from '../../Microservices/Mail/Mailer';
 import { IIdentityService } from '../Contracts';
-import { Customer } from '../../Models/Entities';
 import { Credential } from '../../Common/Credential';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { RefreshTokenDTO } from './DTO/RefreshTokenDTO';
 import { TokenCustomerDTO } from './DTO/TokenCustomerDTO';
-import { TokenLog } from './../../Models/Entities/TokenLog';
+import { Customer, TokenLog } from '../../Models/Entities';
 import { TokenLogger, TokenType } from '../../Common/TokenLogger';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import * as responseMessages from '../../../responseMessages.config.json';

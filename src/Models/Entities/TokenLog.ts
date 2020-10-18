@@ -1,8 +1,7 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Customer } from './Customer';
+import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 @Index('tokens_customer_id_fk', ['identityId'], {})
-@Entity('tokenlog', { schema: 'heroku_42df861642a2ede' })
+@Entity('tokenlog', { schema: 'empero' })
 export class TokenLog {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
@@ -13,30 +12,29 @@ export class TokenLog {
   @Column('longtext', { name: 'token' })
   token: string;
 
-  @Column('int', { name: 'duration' })
-  duration: number;
+  @Column('int', { name: 'tokenType' })
+  tokenType: number;
 
   @Column('tinyint', { name: 'isValid', width: 1 })
   isValid: boolean;
 
-  @Column('int', { name: 'tokenType' })
-  tokenType: number;
+  @Column('int', { name: 'duration' })
+  duration: number;
 
   @Column('datetime', { name: 'expiresAt' })
   expiresAt: Date;
 
   @Column('timestamp', {
     name: 'createdAt',
+    select: false,
     default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
 
   @Column('timestamp', {
     name: 'modifiedAt',
+    select: false,
     default: () => 'CURRENT_TIMESTAMP',
   })
   modifiedAt: Date;
-
-  @JoinColumn([{ name: 'identityId', referencedColumnName: 'id' }])
-  identity: Customer;
 }

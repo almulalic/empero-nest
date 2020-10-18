@@ -8,7 +8,7 @@ import {
   CategoryModule,
   TokenLogModule,
 } from './Modules';
-import { ImagerModule } from './../Image/ImagerModule';
+import { ImagerModule } from '../Microservices/Image/ImagerModule';
 
 @Module({
   imports: [

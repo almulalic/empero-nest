@@ -8,3 +8,8 @@ export enum RoleTypes {
   Customer = 0,
   Admin = 1,
 }
+
+export enum ImageType {
+  Generic = 0,
+  Product = 1,
+}
