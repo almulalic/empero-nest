@@ -22,7 +22,6 @@ import { AuthenticationInterceptor } from '../Auth/AuthenticationInterceptor';
 import { FilesInterceptor } from '@nestjs/platform-express/multer/interceptors/files.interceptor';
 
 @Controller('products')
-@UseInterceptors(AuthenticationInterceptor)
 export class ProductsController {
   constructor(private readonly ProductsService: ProductsService) {}
 
@@ -54,20 +53,23 @@ export class ProductsController {
     return await this.ProductsService.GetProduct(productId);
   }
 
-  @Post()
-  @UseInterceptors(FilesInterceptor('image'))
+  @Post('')
+  @UseInterceptors(AuthenticationInterceptor)
   @UseInterceptors(AuthorizationInterceptor)
+  @UseInterceptors(FilesInterceptor('image'))
   public async AddProduct(@Body() body: ProductDTO, @UploadedFiles() productImages): Promise<OkResponse> {
     return Ok(await this.ProductsService.AddPrdouct(classToPlain(body) as ProductDTO, productImages));
   }
 
   @Put('/:productId')
+  @UseInterceptors(AuthenticationInterceptor)
   @UseInterceptors(AuthorizationInterceptor)
   public async ModifyProduct(@Param('productId') productId: number, @Body() body: ProductDTO): Promise<OkResponse> {
     return Ok(await this.ProductsService.ModifyProduct(productId, body));
   }
 
   @Delete('/:productId')
+  @UseInterceptors(AuthenticationInterceptor)
   @UseInterceptors(AuthorizationInterceptor)
   public async DeleteProduct(@Param('productId') productId: number): Promise<OkResponse> {
     return Ok(await this.ProductsService.DeleteProduct(productId));

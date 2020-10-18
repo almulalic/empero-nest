@@ -4,7 +4,7 @@ export class ProductDTO extends Product {
   heading: string;
   subheading: string;
   categoryId: number;
-  image: string;
+  primaryImageId: number;
   description: string;
   fullDescription: string;
   price: number;

@@ -20,7 +20,9 @@ export class ProductsService implements IPrdouctsService {
   ) {
     this.productsScope = this.EntityManager.getRepository(Product)
       .createQueryBuilder()
-      .innerJoinAndSelect('Product.category', 'Category');
+      .innerJoinAndSelect('Product.category', 'Category')
+      .innerJoinAndSelect('Product.productimages', 'ProductImage')
+      .select(['Product', 'Category', 'ProductImage.imageId']);
   }
 
   public async GetAllProducts(dto: GridParams): Promise<ResponseGrid<Product>> {
@@ -66,14 +68,20 @@ export class ProductsService implements IPrdouctsService {
   }
 
   public async AddPrdouct(dto: ProductDTO, ProductImages): Promise<string> {
-    let category: Category = await this.EntityManager.getRepository(Category).findOne({ id: dto.categoryId });
+    if ((ProductImages.length = 0))
+      throw new HttpException(responseMessages.product.add.noImagesProvided, HttpStatus.BAD_REQUEST);
 
+    if (dto.primaryImageId && dto.primaryImageId > ProductImages.length)
+      throw new HttpException(responseMessages.product.add.invalidImageIndex, HttpStatus.BAD_REQUEST);
+
+    let category: Category = await this.EntityManager.getRepository(Category).findOne({ id: dto.categoryId });
     if (!category) throw new HttpException(responseMessages.product.add.nonExistingCategory, HttpStatus.NOT_FOUND);
 
+    dto.primaryImageId = dto.primaryImageId ? dto.primaryImageId - 1 : 0;
     let productId = (await this.EntityManager.getRepository(Product).insert(dto)).generatedMaps[0].id;
 
     ProductImages.forEach(async (ProductImage) => {
-      await this.ImagerService.UploadProductImage(ProductImage.buffer, productId);
+      await this.ImagerService.UploadProductImage(ProductImage, productId);
     });
 
     return responseMessages.product.add.success;

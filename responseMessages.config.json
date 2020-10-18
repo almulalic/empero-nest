@@ -39,6 +39,8 @@
       "nonExistingProduct": "Traženi artikal nije pronađen."
     },
     "add": {
+      "noImagesProvided": "Artikal mora imati barem jednu sliku!",
+      "invalidImageIndex": "Indeks primarne slike nije validan!",
       "nonExistingCategory": "Navedena kategorija nije pronađena.",
       "success": "Artikal uspješno dodan!"
     },
