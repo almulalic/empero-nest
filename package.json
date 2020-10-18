@@ -1,9 +1,9 @@
 {
   "name": "webshopapi",
   "private": true,
-  "version": "2.5.0",
+  "version": "3.0.0",
   "description": "Full fledge WebShop API system with 3 integrated microservice-like services (Mailer,Imager,Logger)",
-  "license": "MIT",
+  "license": "Reserved",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
@@ -28,10 +28,6 @@
     "@nestjs/platform-express": "^7.1.1",
     "@nestjs/typeorm": "^7.1.4",
     "@sendgrid/mail": "^7.2.6",
-    "@types/bcrypt": "^3.0.0",
-    "@types/passport": "^1.0.4",
-    "@types/passport-jwt": "^3.0.3",
-    "@types/passport-local": "^1.0.33",
     "bcrypt": "^5.0.0",
     "class-transformer": "^0.3.1",
     "dotenv": "^8.2.0",
