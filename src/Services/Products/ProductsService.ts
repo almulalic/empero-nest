@@ -21,7 +21,7 @@ export class ProductsService implements IPrdouctsService {
     this.productsScope = this.EntityManager.getRepository(Product)
       .createQueryBuilder()
       .innerJoinAndSelect('Product.category', 'Category')
-      .innerJoinAndSelect('Product.productimages', 'ProductImage')
+      .leftJoinAndSelect('Product.productimages', 'ProductImage')
       .select(['Product', 'Category', 'ProductImage.imageId']);
   }
 
@@ -60,7 +60,7 @@ export class ProductsService implements IPrdouctsService {
   }
 
   public async GetProduct(productId: number): Promise<Product> {
-    let product: Product = await this.EntityManager.getRepository(Product).findOne({ id: productId });
+    let product: Product = await this.productsScope.where('Product.id = :id', { id: productId }).getOne();
 
     if (!product) throw new HttpException(responseMessages.product.getOne.nonExistingProduct, HttpStatus.NOT_FOUND);
 
