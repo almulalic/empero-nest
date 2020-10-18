@@ -21,6 +21,9 @@
 .idea/**/gradle.xml
 .idea/**/libraries
 
+# ORM Config
+/ormconfig.json
+
 # CMake
 cmake-build-debug/
 
