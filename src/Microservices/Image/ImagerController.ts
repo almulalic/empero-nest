@@ -7,7 +7,6 @@ import { Post, UseInterceptors, UploadedFile, Controller, Param, Get, Res, Delet
 import { ImageType } from '../../Common/Enumerations';
 
 @Controller('imager')
-@UseInterceptors(AuthenticationInterceptor)
 export class ImagerController {
   constructor(private readonly ImagerService: ImagerService) {}
 

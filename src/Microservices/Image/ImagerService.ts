@@ -25,7 +25,7 @@ export class ImagerService {
 
   public async UploadProductImage(image: any, productId: number): Promise<number> {
     let productImageId = await this.UploadImage(image, ImageType.Product);
-    console.log(productImageId);
+
     return (
       await this.EntityManager.getRepository(ProductImage).insert({
         productId: productId,
