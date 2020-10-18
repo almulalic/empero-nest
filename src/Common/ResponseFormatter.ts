@@ -65,6 +65,6 @@ export class OkResponse {
 export function Ok(message: string | boolean | number, statusCode: HttpStatus = 200) {
   return {
     statusCode: statusCode,
-    message: message.toString(),
+    message: message,
   };
 }

@@ -1,9 +1,9 @@
 import { Ok } from '../../Common';
 import { ImagerService } from './ImagerService';
+import { AuthorizationInterceptor } from '../../API/Auth/AuthorizationInterceptor';
 import { AuthenticationInterceptor } from '../../API/Auth/AuthenticationInterceptor';
 import { FileInterceptor } from '@nestjs/platform-express/multer/interceptors/file.interceptor';
 import { Post, UseInterceptors, UploadedFile, Controller, Param, Get, Res, Delete } from '@nestjs/common';
-import { AuthorizationInterceptor } from '../../API/Auth/AuthorizationInterceptor';
 
 @Controller('imager')
 @UseInterceptors(AuthenticationInterceptor)

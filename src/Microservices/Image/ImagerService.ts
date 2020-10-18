@@ -16,6 +16,9 @@ export class ImagerService {
       await this.EntityManager.getRepository(Image).insert({
         image: image.buffer,
         type: ImageType.Generic,
+        mimetype: image.mimetype,
+        encoding: image.encoding,
+        sizeInKb: image.size,
       })
     ).generatedMaps[0].id;
   }
