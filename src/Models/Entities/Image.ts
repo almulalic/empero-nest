@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { ProductImage } from './ProductImage';
+import { ProductImage } from './Productimage';
 import { Product } from './Product';
 
 @Entity('image', { schema: 'empero' })
