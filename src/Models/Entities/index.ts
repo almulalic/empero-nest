@@ -8,4 +8,4 @@ export { TokenLog } from './TokenLog';
 export { Category } from './Category';
 export { Customer } from './Customer';
 export { Migrations } from './Migrations';
-export { ProductImage } from './ProductImage';
+export { ProductImage } from './Productimage';

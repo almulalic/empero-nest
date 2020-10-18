@@ -2,7 +2,7 @@ import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGenerat
 import { Cart } from './Cart';
 import { Order } from './Order';
 import { Image } from './Image';
-import { ProductImage } from './ProductImage';
+import { ProductImage } from './Productimage';
 import { Category } from './Category';
 
 @Index('product_image_id_fk', ['primaryImageId'], {})
