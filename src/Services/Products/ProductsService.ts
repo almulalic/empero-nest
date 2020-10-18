@@ -68,7 +68,7 @@ export class ProductsService implements IPrdouctsService {
   }
 
   public async AddPrdouct(dto: ProductDTO, ProductImages): Promise<string> {
-    if ((ProductImages.length = 0))
+    if (ProductImages.length == 0)
       throw new HttpException(responseMessages.product.add.noImagesProvided, HttpStatus.BAD_REQUEST);
 
     if (dto.primaryImageId && dto.primaryImageId > ProductImages.length)
@@ -110,7 +110,11 @@ export class ProductsService implements IPrdouctsService {
   }
 
   public async DeleteProduct(productId: number): Promise<string> {
-    let product: Product = await this.EntityManager.getRepository(Product).findOne({ id: productId });
+    let product: Product = await this.EntityManager.getRepository(Product)
+      .createQueryBuilder()
+      .addSelect('Order.archivedAt')
+      .where('Order.id = :id', { id: productId })
+      .getOne();
 
     if (!product) throw new HttpException(responseMessages.product.remove.nonExistingProduct, HttpStatus.NOT_FOUND);
     else if (product.archivedAt !== null)

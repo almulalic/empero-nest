@@ -41,7 +41,4 @@ export class Image {
 
   @OneToMany(() => ProductImage, (ProductImage) => ProductImage.image)
   productimages: ProductImage[];
-
-  @OneToMany(() => Product, (product) => product.primaryImage)
-  products: Product[];
 }

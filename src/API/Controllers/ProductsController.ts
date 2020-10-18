@@ -54,23 +54,23 @@ export class ProductsController {
   }
 
   @Post('')
-  @UseInterceptors(AuthenticationInterceptor)
   @UseInterceptors(AuthorizationInterceptor)
+  @UseInterceptors(AuthenticationInterceptor)
   @UseInterceptors(FilesInterceptor('image'))
   public async AddProduct(@Body() body: ProductDTO, @UploadedFiles() productImages): Promise<OkResponse> {
     return Ok(await this.ProductsService.AddPrdouct(classToPlain(body) as ProductDTO, productImages));
   }
 
   @Put('/:productId')
-  @UseInterceptors(AuthenticationInterceptor)
   @UseInterceptors(AuthorizationInterceptor)
+  @UseInterceptors(AuthenticationInterceptor)
   public async ModifyProduct(@Param('productId') productId: number, @Body() body: ProductDTO): Promise<OkResponse> {
     return Ok(await this.ProductsService.ModifyProduct(productId, body));
   }
 
   @Delete('/:productId')
-  @UseInterceptors(AuthenticationInterceptor)
   @UseInterceptors(AuthorizationInterceptor)
+  @UseInterceptors(AuthenticationInterceptor)
   public async DeleteProduct(@Param('productId') productId: number): Promise<OkResponse> {
     return Ok(await this.ProductsService.DeleteProduct(productId));
   }

@@ -63,7 +63,7 @@ export class OrdersService implements IOrderService {
     dto.customerId = currentCustomerId;
     dto.totalPrice = product.price * dto.quantity;
 
-    await this.EntityManager.getRepository(Product).insert(dto);
+    await this.EntityManager.getRepository(Order).insert(dto);
 
     return responseMessages.product.add.success;
   };
@@ -83,7 +83,11 @@ export class OrdersService implements IOrderService {
   };
 
   public RemoveOrder = async (orderId: number): Promise<string> => {
-    let order: Order = await this.EntityManager.getRepository(Order).findOne({ id: orderId });
+    let order: Order = await this.EntityManager.getRepository(Order)
+      .createQueryBuilder()
+      .addSelect('Order.archivedAt')
+      .where('Order.id = :id', { id: orderId })
+      .getOne();
 
     if (!order) throw new HttpException(responseMessages.order.remove.nonExistingOrder, HttpStatus.NOT_FOUND);
     else if (order.archivedAt !== null)
