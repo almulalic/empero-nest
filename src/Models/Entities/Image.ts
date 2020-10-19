@@ -1,6 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ProductImage } from './Productimage';
-import { Product } from './Product';
 
 @Entity('image', { schema: 'empero' })
 export class Image {
@@ -12,6 +11,18 @@ export class Image {
 
   @Column('int', { name: 'type' })
   type: number;
+
+  @Column('timestamp', {
+    name: 'modifiedAt',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  modifiedAt: Date;
+
+  @Column('timestamp', {
+    name: 'createdAt',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: Date;
 
   @Column('varchar', {
     name: 'encoding',
@@ -27,18 +38,6 @@ export class Image {
   @Column('int', { name: 'sizeInKB', default: () => "'0'" })
   sizeInKb: number;
 
-  @Column('timestamp', {
-    name: 'modifiedAt',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
-  modifiedAt: Date;
-
-  @Column('timestamp', {
-    name: 'createdAt',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
-  createdAt: Date;
-
-  @OneToMany(() => ProductImage, (ProductImage) => ProductImage.image)
+  @OneToMany(() => ProductImage, (productimage) => productimage.image)
   productimages: ProductImage[];
 }

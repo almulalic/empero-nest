@@ -2,9 +2,9 @@ import { DateTime } from 'luxon';
 import { ProductDTO } from './DTO';
 import { IPrdouctsService } from '../Contracts';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { ImagerService } from '../../Microservices/Image/ImagerService';
 import { EntityManager, SelectQueryBuilder } from 'typeorm';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { ImagerService } from '../../Microservices/Image/ImagerService';
 import { Category, Product, ProductImage } from '../../Models/Entities';
 import * as responseMessages from '../../../responseMessages.config.json';
 import { GridParams, ResponseGrid } from '../../Common/ResponseFormatter';
@@ -21,7 +21,7 @@ export class ProductsService implements IPrdouctsService {
     this.productsScope = this.EntityManager.getRepository(Product)
       .createQueryBuilder()
       .innerJoinAndSelect('Product.category', 'Category')
-      .leftJoinAndSelect('Product.productimages', 'ProductImage')
+      .innerJoinAndSelect('Product.productimages', 'ProductImage')
       .select(['Product', 'Category', 'ProductImage.imageId']);
   }
 
@@ -80,8 +80,8 @@ export class ProductsService implements IPrdouctsService {
     dto.primaryImageId = dto.primaryImageId ? dto.primaryImageId - 1 : 0;
     let productId = (await this.EntityManager.getRepository(Product).insert(dto)).generatedMaps[0].id;
 
-    ProductImages.forEach(async (ProductImage) => {
-      await this.ImagerService.UploadProductImage(ProductImage, productId);
+    ProductImages.forEach(async (productImage) => {
+      await this.ImagerService.UploadProductImage(productImage, productId);
     });
 
     return responseMessages.product.add.success;

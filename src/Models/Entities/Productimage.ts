@@ -2,8 +2,8 @@ import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } 
 import { Product } from './Product';
 import { Image } from './Image';
 
-@Index('productimage_product_id_fk', ['productId'], {})
 @Index('productimage_image_id_fk', ['imageId'], {})
+@Index('productimage_product_id_fk', ['productId'], {})
 @Entity('productimage', { schema: 'empero' })
 export class ProductImage {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })

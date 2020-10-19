@@ -1,8 +1,8 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { ProductImage } from './Productimage';
 import { Cart } from './Cart';
 import { Order } from './Order';
 import { Category } from './Category';
-import { ProductImage } from '.';
 
 @Index('product_category_id_fk', ['categoryId'], {})
 @Index('product_image_id_fk', ['primaryImageId'], {})
@@ -53,7 +53,7 @@ export class Product {
   @Column('int', { name: 'primaryImageId', nullable: true })
   primaryImageId: number | null;
 
-  @OneToMany(() => ProductImage, (productimage) => productimage.product)
+  @OneToMany(() => ProductImage, (ProductImage) => ProductImage.product)
   productimages: ProductImage[];
 
   @OneToMany(() => Cart, (cart) => cart.product)

@@ -5,7 +5,7 @@ import { HttpStatus } from '@nestjs/common';
 export class GridDataFilter {
   type: GridFilterType;
   key: string;
-  value: OrderType;
+  value: string;
 }
 
 export class GridParams {
@@ -40,15 +40,18 @@ export class ResponseGrid<T> {
     gridParams.filters.forEach((filter) => {
       switch (filter.type) {
         case GridFilterType.Match:
-          filtered = this.records.filter((record) => record[filter.key] == filter.value);
+          if (filter.value || filter.value.length > 0)
+            filtered = this.records.filter((record) => record[filter.key] == filter.value);
           break;
         case GridFilterType.Range:
-          filtered = this.records.filter(
-            (record) => record[filter.key] >= filter.value[0] && record[filter.key] <= filter.value[1],
-          );
+          if (filter.value || filter.value.length > 0)
+            filtered = this.records.filter(
+              (record) => record[filter.key] >= filter.value[0] && record[filter.key] <= filter.value[1],
+            );
           break;
         case GridFilterType.Contains:
-          filtered = this.records.filter((record) => record[filter.key].includes(filter.value));
+          if (filter.value || filter.value.length > 0)
+            filtered = this.records.filter((record) => record[filter.key].includes(filter.value));
           break;
       }
     });
