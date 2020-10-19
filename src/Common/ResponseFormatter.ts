@@ -32,12 +32,12 @@ export class ResponseGrid<T> {
     this.records = records;
   }
 
-  public GetGridData(gridParams: GridParams) {
+  public async GetGridData(gridParams: GridParams) {
     if (this.records.length === 0) return new ResponseGrid<T>(this.records);
 
     let filtered: T[] = this.records;
 
-    gridParams.filters.forEach((filter) => {
+    await gridParams.filters.forEach((filter) => {
       switch (filter.type) {
         case GridFilterType.Match:
           if (filter.value || filter.value.length > 0)

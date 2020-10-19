@@ -65,7 +65,7 @@ export class OrdersService implements IOrderService {
 
     await this.EntityManager.getRepository(Order).insert(dto);
 
-    return responseMessages.product.add.success;
+    return responseMessages.order.add.success;
   };
 
   public ModifyOrder = async (orderId: number, dto: OrderDTO, currentCustomerId: number): Promise<string> => {

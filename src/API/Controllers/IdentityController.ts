@@ -32,7 +32,7 @@ export class IdentityController {
     return Ok(await this.IdentityService.ResendConfirmationToken(body));
   }
 
-  @Get('/confirmIdentity/:token')
+  @Get('/confirm/:token')
   public async ConfirmIdentity(@Param('token') token: string): Promise<OkResponse> {
     return Ok(await this.IdentityService.ConfirmIdentity(token));
   }
@@ -47,7 +47,7 @@ export class IdentityController {
     return Ok(await this.IdentityService.ResetPassword(body));
   }
 
-  @Post('/confimPasswordReset')
+  @Post('/confirmPasswordReset')
   public async ConfimPasswordReset(@Body() body: ConfirmResetPasswordDTO): Promise<OkResponse> {
     return Ok(await this.IdentityService.ConfimPasswordReset(body));
   }

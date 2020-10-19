@@ -8,7 +8,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 export class Mailer {
   public static SendConfirmationEmail = async (identity: Customer, token: string): Promise<string> => {
-    const url = process.env.BASE_APP_URL + `/accountConfirmation/${token}`;
+    const url = process.env.BASE_APP_URL + `/confirmation/${token}`;
 
     return new Promise((resolve, reject) => {
       sgMail
@@ -28,7 +28,7 @@ export class Mailer {
   };
 
   public static ResendConfirmationEmail = async (identity: Customer, token: string): Promise<string> => {
-    const url = process.env.BASE_APP_URL + `/identity/accountConfirmation/${token}`;
+    const url = process.env.BASE_APP_URL + `/confirmation/${token}`;
 
     return new Promise((resolve, reject) => {
       sgMail
@@ -48,14 +48,14 @@ export class Mailer {
   };
 
   public static SendResetPasswordEmail = async (identity: Customer, token: string) => {
-    const url = process.env.BASE_APP_URL + `/identity/resetPasswordConfirmation/${token}`;
+    const url = process.env.BASE_APP_URL + `/confirmPasswordReset/${token}`;
 
     return new Promise((resolve, reject) => {
       sgMail
         .send({
           to: identity.email,
           from: mailerConfig.noReply,
-          subject: 'Reset password golden spoon',
+          subject: 'Reset password empero',
           html: ` Please click this link to proceed to password reset <a href="${url}">${url}</a>`,
         })
         .then(() => {

@@ -21,8 +21,7 @@ export class ProductsService implements IPrdouctsService {
     this.productsScope = this.EntityManager.getRepository(Product)
       .createQueryBuilder()
       .innerJoinAndSelect('Product.category', 'Category')
-      .innerJoinAndSelect('Product.productimages', 'ProductImage')
-      .select(['Product', 'Category', 'ProductImage.imageId']);
+      .innerJoinAndSelect('Product.productimages', 'ProductImage');
   }
 
   public async GetAllProducts(dto: GridParams): Promise<ResponseGrid<Product>> {
