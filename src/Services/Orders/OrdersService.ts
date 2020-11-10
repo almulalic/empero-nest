@@ -11,26 +11,29 @@ import * as responseMessages from '../../../responseMessages.config.json';
 
 @Injectable()
 export class OrdersService implements IOrderService {
-  private ordersScope: SelectQueryBuilder<Order>;
-
   constructor(
     @InjectEntityManager()
     private EntityManager: EntityManager,
-  ) {
-    this.ordersScope = this.EntityManager.getRepository(Order)
-      .createQueryBuilder()
-      .innerJoinAndSelect('Order.customer', 'Customer')
-      .innerJoinAndSelect('Order.product', 'Product');
-  }
+  ) {}
 
   public GetAllOrders = async (dto: GridParams): Promise<ResponseGrid<Order>> => {
-    let orders: Order[] = await this.ordersScope.where('Order.archivedAt IS NULL').getMany();
+    let orders: Order[] = await this.EntityManager.getRepository(Order)
+      .createQueryBuilder()
+      .innerJoinAndSelect('Order.customer', 'Customer')
+      .innerJoinAndSelect('Order.product', 'Product')
+      .where('Order.archivedAt IS NULL')
+      .getMany();
 
     return new ResponseGrid(orders).GetGridData(dto);
   };
 
   public GetArchive = async (dto: GridParams): Promise<ResponseGrid<Order>> => {
-    let archive: Order[] = await this.ordersScope.where('Order.archivedAt IS NOT NULL').getMany();
+    let archive: Order[] = await this.EntityManager.getRepository(Order)
+      .createQueryBuilder()
+      .innerJoinAndSelect('Order.customer', 'Customer')
+      .innerJoinAndSelect('Order.product', 'Product')
+      .where('Order.archivedAt IS NOT NULL')
+      .getMany();
 
     return new ResponseGrid(archive).GetGridData(dto);
   };

@@ -11,22 +11,17 @@ import { GridParams, ResponseGrid } from '../../Common/ResponseFormatter';
 
 @Injectable()
 export class ProductsService implements IPrdouctsService {
-  private productsScope: SelectQueryBuilder<Product>;
-
   constructor(
     @InjectEntityManager()
     private readonly EntityManager: EntityManager,
     private readonly ImagerService: ImagerService,
-  ) {
-    this.productsScope = this.EntityManager.getRepository(Product)
-      .createQueryBuilder()
-      .innerJoinAndSelect('Product.category', 'Category')
-      .innerJoinAndSelect('Product.productimages', 'ProductImage');
-  }
+  ) {}
 
   public async GetAllProducts(dto: GridParams): Promise<ResponseGrid<Product>> {
-    let products: Product[] = await this.productsScope
-      .where('Product.archivedAt IS NULL')
+    let products: Product[] = await this.EntityManager.getRepository(Product)
+      .createQueryBuilder()
+      .innerJoinAndSelect('Product.category', 'Category')
+      .innerJoinAndSelect('Product.productimages', 'ProductImage')
       .orderBy(`Product.${dto.sortBy || 'createdAt'}`, dto.order || 'ASC')
       .getMany();
 
@@ -34,7 +29,10 @@ export class ProductsService implements IPrdouctsService {
   }
 
   public async GetArchive(dto: GridParams): Promise<ResponseGrid<Product>> {
-    let archive: Product[] = await this.productsScope
+    let archive: Product[] = await this.EntityManager.getRepository(Product)
+      .createQueryBuilder()
+      .innerJoinAndSelect('Product.category', 'Category')
+      .innerJoinAndSelect('Product.productimages', 'ProductImage')
       .where('Product.archivedAt IS NOT NULL')
       .orderBy(`Product.${dto.sortBy || `createdAt`}`, dto.order || 'ASC')
       .getMany();
@@ -43,14 +41,20 @@ export class ProductsService implements IPrdouctsService {
   }
 
   public async GetRecommended(): Promise<Product[]> {
-    return (await this.productsScope
+    return (await this.EntityManager.getRepository(Product)
+      .createQueryBuilder()
+      .innerJoinAndSelect('Product.category', 'Category')
+      .innerJoinAndSelect('Product.productimages', 'ProductImage')
       .where('Product.archivedAt IS NULL')
       .andWhere('Product.isRecommended = true')
       .getMany()) as Product[];
   }
 
   public async GetSuggested(categoryId: number): Promise<Product[]> {
-    return (await this.productsScope
+    return (await this.EntityManager.getRepository(Product)
+      .createQueryBuilder()
+      .innerJoinAndSelect('Product.category', 'Category')
+      .innerJoinAndSelect('Product.productimages', 'ProductImage')
       .where('Product.categoryId = :categoryId', { categoryId: categoryId })
       .andWhere('Product.archivedAt IS NULL')
       .orderBy('RAND()')
@@ -59,7 +63,12 @@ export class ProductsService implements IPrdouctsService {
   }
 
   public async GetProduct(productId: number): Promise<Product> {
-    let product: Product = await this.productsScope.where('Product.id = :id', { id: productId }).getOne();
+    let product: Product = await this.EntityManager.getRepository(Product)
+      .createQueryBuilder()
+      .innerJoinAndSelect('Product.category', 'Category')
+      .innerJoinAndSelect('Product.productimages', 'ProductImage')
+      .where('Product.id = :id', { id: productId })
+      .getOne();
 
     if (!product) throw new HttpException(responseMessages.product.getOne.nonExistingProduct, HttpStatus.NOT_FOUND);
 
