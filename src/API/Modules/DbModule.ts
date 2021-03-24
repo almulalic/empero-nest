@@ -1,26 +1,15 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 import { Cart, Customer, Order, Product, Category, Image, TokenLog, ProductImage } from '../../Models/Entities';
 
 require('dotenv').config();
 
-const {
-  DB_NAME,
-  DB_TYPE,
-  DB_HOST,
-  DB_PORT,
-  DB_USERNAME,
-  DB_PASSWORD,
-  DB_TABLE_NAME,
-  DB_SYNC,
-  DB_LOGGING,
-} = process.env;
+const { DB_TYPE, DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_TABLE_NAME, DB_SYNC, DB_LOGGING } = process.env;
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      name: DB_NAME,
       type: DB_TYPE as MysqlConnectionOptions['type'],
       host: DB_HOST,
       port: Number(DB_PORT),

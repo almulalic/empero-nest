@@ -1,3 +1,3 @@
-consider moving hasing to typeorm
+consider moving hashing to typeorm
 new hash function for token generation
 Logger
